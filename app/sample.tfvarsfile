@@ -1,0 +1,58 @@
+## Copy this to a .tfvars file for each environment
+
+### Generic variables ###
+
+company_name       = ""
+app_name           = "shieldrule"
+environment        = ""
+region             = ""
+app_vpc_cidr       = ""
+tags = {
+  Environment       = "dev"
+  Company           = "modernlogic"
+  Deployment_Method = "terraform"
+}
+
+### KMS ###
+
+# This is just the person in charge of deploying these files, so that theu get added to KMS grants
+author             = "arn:aws:iam::600592424179:user/DevopsUser"
+kms_grantees = []
+
+### Database ###
+
+# Initial database name for RDS cluster
+initial_database   = ""
+master_db_username = ""
+master_db_password = ""
+snapshot_identifier = ""
+auth0_password = ""
+
+### DNS ###
+
+# The Route 53 hosted zone ID to set DNS records to
+zone_id           = ""
+# The domain to set subdomains to, for ECS services
+domain = ""
+# The AWS ACM certificate to use for subdomains
+certificate_arn = ""
+
+### EC2 ###
+
+# The optional AMI to use for bastion instances. Parameterized so that you can use plain images for a jump box, or something more fleshed-out like OpenVPN instances if needed
+bastion_ami = ""
+
+# The optional EC2 host AMI for ECS tasks. Set this either to an ECS-optimized AMI, or the result of running 'packer build' in ami_management
+ecs_host_ami = ""
+
+### Grafana ###
+
+# Deploy grafana. If this is set to false, no Grafana resources will be deployed
+deploy_grafana_resources = false
+# Grafana API key
+grafana_auth = ""
+# AWS Access and Secret key, for a Grafana Cloudwatch data source
+aws_access_key = ""
+aws_secret_key = ""
+# Comma-separated list of recipients for Grafana alerts
+grafana_email_recipients = ""
