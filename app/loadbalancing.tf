@@ -84,7 +84,7 @@ module "shared_ecs_launch_template" {
   template_name               = "ecs"
   region                      = var.region
   associate_public_ip_address = false
-  instance_type               = "t3.xlarge"
+  instance_type               = "t3.2xlarge"
   key_name                    = "${var.app_name}-services-${var.environment}"
   ami                         = var.ecs_host_ami != "" ? var.ecs_host_ami : data.aws_ami.ecs.image_id
   user_data                   = <<EOF

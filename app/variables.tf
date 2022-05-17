@@ -58,7 +58,7 @@ variable "grafana_email_recipients" {
 }
 variable "desired_task_count_api" {
   type    = number
-  default = 2
+  default = 3 
 }
 variable "desired_task_count_web" {
   type    = number
@@ -150,11 +150,11 @@ variable "services_to_grant_kms_access_to" {
 }
 variable "api_task_memory" {
   type    = number
-  default = 15500
+  default = 31000
 }
 variable "api_task_vcpu" {
   type    = number
-  default = 3900
+  default = 7800
 }
 variable "deploy_route53_resources" {
   type    = bool
