@@ -1,0 +1,10 @@
+### TERRAFORM ###
+**/terraform.tfstate.d/**
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/.terraform/**
+**/.terraform.lock.hcl
+infrastructure/terraform/command
+infrastructure/terraform/app.zip
+infrastructure/terraform/**.env
+infrastructure/terraform/**/**.backup
