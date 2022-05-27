@@ -1,0 +1,1 @@
+../../scripts/list_tasks.sh

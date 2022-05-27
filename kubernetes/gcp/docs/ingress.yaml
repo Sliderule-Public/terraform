@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shieldrule-docs-ingress
+  annotations:
+    networking.gke.io/managed-certificates: managed-cert
+    kubernetes.io/ingress.global-static-ip-name: shieldrule-docs
+    kubernetes.io/ingress.class: "gce"
+spec:
+  rules:
+    - host: "docs-gcp.usemodernlogic.com"
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: shieldrule-docs
+                port:
+                  number: 80

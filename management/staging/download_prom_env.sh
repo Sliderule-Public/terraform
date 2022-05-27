@@ -1,0 +1,1 @@
+../scripts/download_prom_env.sh

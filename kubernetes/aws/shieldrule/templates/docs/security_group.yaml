@@ -1,0 +1,11 @@
+apiVersion: vpcresources.k8s.aws/v1beta1
+kind: SecurityGroupPolicy
+metadata:
+  name: shieldrule-sg-docs
+spec:
+  podSelector:
+    matchLabels:
+      role: shieldrule-docs-role
+  securityGroups:
+    groupIds:
+      - {{ .Values.pod_security_group }}
