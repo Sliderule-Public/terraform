@@ -1,1 +1,0 @@
-../../scripts/connect.sh

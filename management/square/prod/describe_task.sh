@@ -1,1 +1,0 @@
-../../scripts/describe_task.sh

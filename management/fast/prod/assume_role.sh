@@ -1,1 +1,0 @@
-../../scripts/assume_role.sh

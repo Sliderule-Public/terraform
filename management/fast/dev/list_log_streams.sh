@@ -1,1 +1,0 @@
-../../scripts/list_log_streams.sh

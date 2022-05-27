@@ -1,1 +1,0 @@
-../scripts/upload_images.sh

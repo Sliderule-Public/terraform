@@ -1,1 +1,0 @@
-../scripts/upload_prom_env.sh
