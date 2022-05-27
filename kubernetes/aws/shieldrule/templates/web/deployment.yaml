@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shieldrule-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shieldrule-web
+      role: shieldrule-web-role
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: shieldrule-web
+        role: shieldrule-web-role
+    spec:
+      containers:
+        - image: 600592424179.dkr.ecr.us-west-1.amazonaws.com/shieldrule-web:dev
+          name: shieldrule-web
+          ports:
+            - containerPort: 8000
+          resources: {}
+          securityContext:
+            capabilities:
+              drop:
+                - all
+          volumeMounts:
+            - mountPath: /var/cache/nginx
+              name: shieldrule-web-tmpfs0
+      restartPolicy: Always
+      volumes:
+        - emptyDir:
+            medium: Memory
+          name: shieldrule-web-tmpfs0
+status: {}
