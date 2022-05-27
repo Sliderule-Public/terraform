@@ -1,9 +1,0 @@
-apiVersion: networking.gke.io/v1
-kind: ManagedCertificate
-metadata:
-  name: managed-cert
-spec:
-  domains:
-    - web-gcp.usemodernlogic.com
-    - docs-gcp.usemodernlogic.com
-    - api-gcp.usemodernlogic.com
