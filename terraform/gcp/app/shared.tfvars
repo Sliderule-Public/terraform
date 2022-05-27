@@ -1,1 +1,0 @@
-billing_account = "017C00-4CF7C3-3D371A"
