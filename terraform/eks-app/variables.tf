@@ -95,11 +95,6 @@ variable "public_subnet_ids" {
   description = "only needed if create_vpc is false"
   default     = []
 }
-variable "database_az" {
-  type        = string
-  description = "only needed if create_vpc is false. AZ to create a database in"
-  default     = ""
-}
 variable "deploy_eks" {
   type    = bool
   default = true

@@ -4,13 +4,17 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 
 locals {
   account_id         = data.aws_caller_identity.current.account_id
   vpc_id             = var.create_vpc == true ? module.shared_vpc[0].vpc_id : var.vpc_id
   public_subnet_ids  = var.create_vpc == true ? module.shared_vpc[0].public_subnet_ids : var.public_subnet_ids
   private_subnet_ids = var.create_vpc == true ? module.shared_vpc[0].private_subnet_ids : var.private_subnet_ids
-  database_az        = var.create_vpc == true ? module.shared_vpc[0].az_1 : var.database_az
+  database_az        = var.create_vpc == true ? module.shared_vpc[0].az_1 : data.aws_availability_zones.available.names[0]
 }
 
 terraform {

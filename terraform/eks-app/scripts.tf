@@ -61,3 +61,11 @@ resource "null_resource" "prepare_eks_oidc_vars" {
     command = "bash ../bin/prepare_eks_oidc_vars.sh ${var.environment} ${var.region} ${module.ecs_task_role.role_arn} ${aws_eks_cluster.main[0].id} ${aws_eks_cluster.main[0].certificate_authority[0].data} ${module.ecs_task_role.role_name} ${aws_eks_cluster.main[0].identity[0].oidc[0].issuer} ${aws_eks_cluster.main[0].endpoint}"
   }
 }
+
+resource "null_resource" "prepare_eks_oidc_vars_no_cluster" {
+  count      = var.deploy_eks == true ? 0 : 1
+  depends_on = [aws_eks_cluster.main, null_resource.populate_pod_values]
+  provisioner "local-exec" {
+    command = "bash ../bin/prepare_eks_oidc_vars_no_cluster.sh ${var.environment} ${var.region} ${module.ecs_task_role.role_arn} ${module.ecs_task_role.role_name}"
+  }
+}

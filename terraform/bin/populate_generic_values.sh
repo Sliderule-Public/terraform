@@ -1,4 +1,5 @@
 #! /bin/bash
+# Prepares generic value for an env file
 
 ENVIRONMENT=$1
 COMPANY_NAME=$2

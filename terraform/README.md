@@ -80,3 +80,5 @@ This is done manually in order to allow you to use any DNS provider and verifica
   terraform init
   terraform apply --var-file={env}.tfvars
   ```
+
+![Shieldrule EKS Visual Flow](images/shieldrule-eks-flow.png)

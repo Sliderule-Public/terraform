@@ -1,4 +1,5 @@
 #! /bin/bash
+# Prepares and sends a values yaml file to shieldrule
 
 ENVIRONMENT=$1
 
