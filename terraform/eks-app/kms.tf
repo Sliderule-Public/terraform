@@ -8,8 +8,7 @@ module "main_key" {
   tags         = var.tags
   policy       = data.aws_iam_policy_document.main_kms_key.json
   usage_grantee_arns = concat(var.kms_grantees, [
-    var.author,
-    module.ecs_task_role.role_arn,
+    module.eks_task_role.role_arn,
   ])
 }
 
@@ -22,7 +21,6 @@ module "rds_key" {
   key_name     = "rds-key"
   tags         = var.tags
   usage_grantee_arns = concat(var.kms_grantees, [
-    var.author,
     module.rds_role.role_arn
   ])
 }

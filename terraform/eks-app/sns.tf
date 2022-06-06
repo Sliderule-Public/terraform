@@ -4,8 +4,8 @@ resource "aws_sns_topic" "alarms" {
 }
 
 resource "aws_sns_topic_subscription" "ecs_alarms_email_subscription" {
-  count     = length(var.ecs_alarms_email_recipients)
+  count     = length(var.alarms_email_recipients)
   topic_arn = aws_sns_topic.alarms.arn
   protocol  = "email"
-  endpoint  = var.ecs_alarms_email_recipients[count.index]
+  endpoint  = var.alarms_email_recipients[count.index]
 }

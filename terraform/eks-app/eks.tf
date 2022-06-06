@@ -2,7 +2,7 @@ resource "aws_eks_cluster" "main" {
   count    = var.deploy_eks == true ? 1 : 0
   name     = "${var.environment}-eks"
   version  = ""
-  role_arn = aws_iam_role.eks.arn
+  role_arn = aws_iam_role.eks[0].arn
 
   vpc_config {
     subnet_ids = local.public_subnet_ids
@@ -19,7 +19,7 @@ resource "aws_eks_node_group" "main" {
   count           = var.deploy_eks == true ? 1 : 0
   cluster_name    = aws_eks_cluster.main[0].name
   node_group_name = "${var.environment}-eks"
-  node_role_arn   = aws_iam_role.eks.arn
+  node_role_arn   = aws_iam_role.eks[0].arn
   subnet_ids      = local.public_subnet_ids
   instance_types  = ["t3.2xlarge"]
 

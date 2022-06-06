@@ -85,3 +85,10 @@ ports:
   web: 31255
   docs: 31256
   api: 31257
+
+RESET_DB: false
+USE_AUTH_0: true
+USE_INSTANCE_PROFILE: true
+USE_REDIS: true
+USE_SQS: true
+ENVIRONMENT: production

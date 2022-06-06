@@ -23,13 +23,13 @@ module "rds_role" {
   EOF
 }
 
-module "ecs_task_role" {
+module "eks_task_role" {
   environment  = var.environment
   company_name = var.company_name
   tags         = var.tags
   source       = "../src/modules/simple/iam_role"
-  role_name    = "ecs-tasks"
-  service      = "ecs-tasks.amazonaws.com"
+  role_name    = "eks-tasks"
+  service      = "eks.amazonaws.com"
   policy       = data.aws_iam_policy_document.task.json
 }
 
@@ -67,6 +67,7 @@ data "aws_iam_policy_document" "task" {
 }
 
 resource "aws_iam_role" "eks" {
+  count    = var.deploy_eks == true ? 1 : 0
   name = "${var.environment}-eks"
 
   managed_policy_arns = [
