@@ -16,7 +16,7 @@ spec:
         role: shieldrule-api-role
     spec:
       containers:
-        - image: 600592424179.dkr.ecr.us-west-1.amazonaws.com/shieldrule-api:dev
+        - image: "600592424179.dkr.ecr.us-west-1.amazonaws.com/shieldrule-api:{{ .Values.ENVIRONMENT }}"
           name: shieldrule-api
           ports:
             - containerPort: 8000
