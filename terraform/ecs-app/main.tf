@@ -20,10 +20,8 @@ locals {
   zone_names           = [for zone in data.aws_route53_zone.selected : zone.name]
   web_domains          = flatten([for subdomain in var.web_subdomains : [for name in local.zone_names : "${subdomain}.${name}"]])
   api_domains          = flatten([for subdomain in var.api_subdomains : [for name in local.zone_names : "${subdomain}.${name}"]])
-  docs_domains         = flatten([for subdomain in var.docs_subdomains : [for name in local.zone_names : "${subdomain}.${name}"]])
   web_route53_entries  = flatten([for subdomain in var.web_subdomains : [for id in var.hosted_zone_ids : { subdomain : subdomain, id : id }]])
   api_route53_entries  = flatten([for subdomain in var.api_subdomains : [for id in var.hosted_zone_ids : { subdomain : subdomain, id : id }]])
-  docs_route53_entries = flatten([for subdomain in var.docs_subdomains : [for id in var.hosted_zone_ids : { subdomain : subdomain, id : id }]])
 }
 
 terraform {

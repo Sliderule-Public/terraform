@@ -169,9 +169,6 @@ variable "database_instance_type" {
 variable "api_subdomains" {
   type = list(string)
 }
-variable "docs_subdomains" {
-  type = list(string)
-}
 variable "web_subdomains" {
   type = list(string)
 }
