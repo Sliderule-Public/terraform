@@ -20,8 +20,8 @@ variable "service_name" {
 variable "cluster_id" {
   type = string
 }
-variable "domain" {
-  type = string
+variable "domain_names" {
+  type = list(string)
 }
 variable "task_definition_arn" {
   type = string
@@ -49,9 +49,6 @@ variable "target_type" {
 variable "enable_health_check" {
   type    = bool
   default = true
-}
-variable "subdomain" {
-  type = string
 }
 variable "desired_count" {
   type    = number

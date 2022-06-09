@@ -16,5 +16,5 @@ module "rds_instance" {
   master_username     = var.master_db_username
   snapshot_identifier = var.snapshot_identifier != "" ? var.snapshot_identifier : ""
   skip_final_snapshot = var.skip_final_snapshot
-  deploy_read_replica = var.deploy_read_replica
+  instance_type       = var.database_instance_type
 }

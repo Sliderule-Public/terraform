@@ -84,7 +84,7 @@ module "shared_ecs_launch_template" {
   template_name               = "ecs"
   region                      = var.region
   associate_public_ip_address = false
-  instance_type               = "t3.2xlarge"
+  instance_type               = var.host_instance_type
   key_name                    = "${var.app_name}-services-${var.environment}"
   ami                         = var.ecs_host_ami != "" ? var.ecs_host_ami : data.aws_ami.ecs.image_id
   user_data                   = <<EOF
@@ -105,7 +105,7 @@ module "shared_bastion_launch_template" {
   tags                  = var.tags
   template_name         = "bastion"
   region                = var.region
-  instance_type         = "t3.xlarge"
+  instance_type         = var.bastion_instance_type
   key_name              = "${var.app_name}-services-${var.environment}"
   ami                   = var.bastion_ami != "" ? var.bastion_ami : data.aws_ami.ubuntu.image_id
   instance_profile_name = module.bastion_instance_profile.profile_name
@@ -113,7 +113,7 @@ module "shared_bastion_launch_template" {
     module.shared_bastion_security_group.security_group_id,
     module.database_access_security_group.security_group_id
   ]
-  user_data                   = <<EOF
+  user_data = <<EOF
     #!/bin/bash
     amazon-linux-extras install epel -y
     yum update -y

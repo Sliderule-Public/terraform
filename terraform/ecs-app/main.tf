@@ -10,20 +10,20 @@ provider "grafana" {
 data "aws_caller_identity" "current" {}
 
 data "aws_route53_zone" "selected" {
-  count   = var.deploy_route53_resources == true ? 1 : 0
-  zone_id = var.zone_id
+  count   = var.deploy_route53_resources == true ? length(var.hosted_zone_ids) : 0
+  zone_id = var.hosted_zone_ids[count.index]
 }
 
 
 locals {
-  account_id              = data.aws_caller_identity.current.account_id
-  web_subdomain           = var.environment == "prod" ? "app" : var.environment
-  api_subdomain           = var.environment == "prod" ? "api" : "api-${var.environment}"
-  docs_subdomain          = var.environment == "prod" ? "docs-temp" : "docs-${var.environment}"
-  root_domain             = var.deploy_route53_resources == true ? data.aws_route53_zone.selected[0].name : var.domain
-  formatted_web_hostname  = "${local.web_subdomain}.${local.root_domain}"
-  formatted_api_hostname  = "${local.api_subdomain}.${local.root_domain}"
-  formatted_docs_hostname = "${local.docs_subdomain}.${local.root_domain}"
+  account_id           = data.aws_caller_identity.current.account_id
+  zone_names           = [for zone in data.aws_route53_zone.selected : zone.name]
+  web_domains          = flatten([for subdomain in var.web_subdomains : [for name in local.zone_names : "${subdomain}.${name}"]])
+  api_domains          = flatten([for subdomain in var.api_subdomains : [for name in local.zone_names : "${subdomain}.${name}"]])
+  docs_domains         = flatten([for subdomain in var.docs_subdomains : [for name in local.zone_names : "${subdomain}.${name}"]])
+  web_route53_entries  = flatten([for subdomain in var.web_subdomains : [for id in var.hosted_zone_ids : { subdomain : subdomain, id : id }]])
+  api_route53_entries  = flatten([for subdomain in var.api_subdomains : [for id in var.hosted_zone_ids : { subdomain : subdomain, id : id }]])
+  docs_route53_entries = flatten([for subdomain in var.docs_subdomains : [for id in var.hosted_zone_ids : { subdomain : subdomain, id : id }]])
 }
 
 terraform {
@@ -39,7 +39,7 @@ terraform {
     }
 
     auth0 = {
-      source  = "alexkappa/auth0"
+      source = "alexkappa/auth0"
     }
   }
 

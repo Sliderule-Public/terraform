@@ -47,16 +47,12 @@ variable "tags" {
 }
 variable "instance_type" {
   type    = string
-  default = "db.t3.small"
+  default = "db.t2.large"
 }
 variable "availability_zone" {
   type = string
 }
 variable "skip_final_snapshot" {
-  type    = bool
-  default = false
-}
-variable "deploy_read_replica" {
   type    = bool
   default = false
 }

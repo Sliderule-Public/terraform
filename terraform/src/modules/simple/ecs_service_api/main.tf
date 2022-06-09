@@ -103,9 +103,13 @@ resource "aws_lb_listener_rule" "grpc" {
 
   condition {
     host_header {
-      values = [var.environment == "prod" ? "grpc.${var.domain}" : "grpc-${var.environment}.${var.domain}"]
+      values = flatten([for name in var.domain_names: "${local.grpc_subdomain}.${name}"])
     }
   }
+}
+
+locals {
+  grpc_subdomain = var.environment == "prod" ? "grpc" : "grpc-${var.environment}"
 }
 
 data "aws_lb" "main" {

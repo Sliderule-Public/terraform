@@ -24,4 +24,5 @@ module "redis" {
   tags               = var.tags
   security_group_ids = [module.redis_security_group.security_group_id]
   subnet_ids         = module.shared_vpc.private_subnet_ids
+  node_type          = var.redis_node_type
 }

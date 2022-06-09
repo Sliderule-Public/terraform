@@ -72,36 +72,3 @@ module "api_task_definition" {
   ]
   tags = var.tags
 }
-
-module "docs_task_definition" {
-  source             = "../src/modules/simple/ecs_service_task_definition"
-  environment        = var.environment
-  image_tag          = var.environment == "prod" ? "dev" : var.environment
-  company_name       = var.company_name
-  kms_key_arn        = module.main_key.key_arn
-  account_id         = local.account_id
-  container_port     = 8000
-  memory             = 256
-  cpu                = 128
-  image_name         = "shieldrule-docs"
-  task_name          = "${var.app_name}-docs"
-  region             = var.region
-  execution_role_arn = module.ecs_task_execution_role.role_arn
-  task_role_arn      = module.ecs_task_role.role_arn
-  read_only          = false
-  user               = "nginx"
-  linuxParameters = {
-    tmpfs = [{
-      containerPath = "/var/cache/nginx"
-      size          = 20
-      mountOptions  = ["uid=101"]
-    }]
-  }
-  environmentOverrides = [
-    {
-      name  = "foo",
-      value = "bar"
-    }
-  ]
-  tags = var.tags
-}

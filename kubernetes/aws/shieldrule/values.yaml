@@ -83,7 +83,6 @@ affinity: {}
 
 ports:
   web: 31255
-  docs: 31256
   api: 31257
 
 RESET_DB: false

@@ -39,8 +39,8 @@ variable "master_db_username" {
 variable "master_db_password" {
   type = string
 }
-variable "zone_id" {
-  type = string
+variable "hosted_zone_ids" {
+  type = list(string)
 }
 variable "grafana_auth" {
   type    = string
@@ -63,10 +63,6 @@ variable "desired_task_count_api" {
 variable "desired_task_count_web" {
   type    = number
   default = 2
-}
-variable "desired_task_count_docs" {
-  type    = number
-  default = 1
 }
 variable "minimum_host_count" {
   type    = number
@@ -91,21 +87,6 @@ variable "ecs_host_ami" {
 variable "certificate_arn" {
   type = string
 }
-variable "domain" {
-  type = string
-}
-variable "api_host_listeners" {
-  type    = list(string)
-  default = []
-}
-variable "web_host_listeners" {
-  type    = list(string)
-  default = []
-}
-variable "docs_host_listeners" {
-  type    = list(string)
-  default = []
-}
 variable "ecs_alarms_email_recipients" {
   type    = list(string)
   default = []
@@ -127,10 +108,6 @@ variable "server_iam_role_policy_statements" {
   //  ]
 }
 variable "skip_final_snapshot" {
-  type    = bool
-  default = false
-}
-variable "deploy_read_replica" {
   type    = bool
   default = false
 }
@@ -176,4 +153,29 @@ variable "auth0_client_id" {
 }
 variable "auth0_secret" {
   type = string
+}
+variable "host_instance_type" {
+  type = string
+  default = "t3.xlarge"
+}
+variable "bastion_instance_type" {
+  type = string
+  default = "t3.small"
+}
+variable "database_instance_type" {
+  type = string
+  default = "db.t2.large"
+}
+variable "api_subdomains" {
+  type = list(string)
+}
+variable "docs_subdomains" {
+  type = list(string)
+}
+variable "web_subdomains" {
+  type = list(string)
+}
+variable "redis_node_type" {
+  type = string
+  default = "cache.m4.xlarge"
 }
