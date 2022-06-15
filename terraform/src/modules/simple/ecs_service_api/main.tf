@@ -37,10 +37,10 @@ resource "aws_lb_target_group" "grpc" {
     matcher             = "0-99"
     protocol            = "HTTP"
     path                = "/'"
-    timeout             = 10
-    interval            = 30
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
+    timeout             = var.api_health_check_timeout
+    interval            = var.api_health_check_interval
+    healthy_threshold   = var.api_healthy_threshold
+    unhealthy_threshold = var.api_unhealthy_threshold
   }
   tags = var.tags
 }

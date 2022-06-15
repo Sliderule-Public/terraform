@@ -22,8 +22,9 @@ module "server_docs_bucket" {
 }
 
 resource "aws_s3_bucket_object" "object" {
+  count      = var.use_variable_scripts == true ? 1 : 0
   depends_on = [null_resource.populate_sqs_values]
-  bucket = module.infrastructure_bucket.bucket
-  key    = "env-files/api/${var.environment}.env"
-  source = "../${var.environment}.env"
+  bucket     = module.infrastructure_bucket.bucket
+  key        = "env-files/api/${var.environment}.env"
+  source     = "./${var.environment}.env"
 }

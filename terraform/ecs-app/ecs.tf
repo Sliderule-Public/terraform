@@ -33,26 +33,30 @@ module "web_ecs_service" {
 }
 
 module "api_ecs_service" {
-  source                  = "../src/modules/simple/ecs_service_api"
-  environment             = var.environment
-  company_name            = var.company_name
-  service_name            = "${var.app_name}-api"
-  host_listeners          = local.api_domains
-  container_port          = 8000
-  health_check_path       = "/actuator/health"
-  target_type             = "instance"
-  desired_count           = var.desired_task_count_api
-  container_to_forward_to = "${var.app_name}-api"
-  capacity_provider_name  = module.services_ecs_cluster.capacity_provider_name
-  cluster_id              = module.services_ecs_cluster.cluster_id
-  listener_arn            = module.shared_ecs_load_balancer.listener_arn
-  load_balancer_arn       = module.shared_ecs_load_balancer.lb_arn
-  sns_arn                 = aws_sns_topic.alarms.arn
-  task_definition_arn     = module.api_task_definition.task_definition_arn
-  vpc_id                  = module.shared_vpc.vpc_id
-  domain_names            = local.zone_names
-  vpc_security_group_ids  = [module.shared_ecs_service_security_group.security_group_id]
-  tags                    = var.tags
+  source                    = "../src/modules/simple/ecs_service_api"
+  environment               = var.environment
+  company_name              = var.company_name
+  service_name              = "${var.app_name}-api"
+  host_listeners            = local.api_domains
+  container_port            = 8000
+  health_check_path         = "/actuator/health"
+  target_type               = "instance"
+  desired_count             = var.desired_task_count_api
+  container_to_forward_to   = "${var.app_name}-api"
+  capacity_provider_name    = module.services_ecs_cluster.capacity_provider_name
+  cluster_id                = module.services_ecs_cluster.cluster_id
+  listener_arn              = module.shared_ecs_load_balancer.listener_arn
+  load_balancer_arn         = module.shared_ecs_load_balancer.lb_arn
+  sns_arn                   = aws_sns_topic.alarms.arn
+  task_definition_arn       = module.api_task_definition.task_definition_arn
+  vpc_id                    = module.shared_vpc.vpc_id
+  domain_names              = local.zone_names
+  vpc_security_group_ids    = [module.shared_ecs_service_security_group.security_group_id]
+  tags                      = var.tags
+  api_health_check_interval = var.api_health_check_interval
+  api_health_check_timeout  = var.api_health_check_timeout
+  api_healthy_threshold     = var.api_healthy_threshold
+  api_unhealthy_threshold   = var.api_unhealthy_threshold
   subnets = [
     module.shared_vpc.private_subnet_id_0,
     module.shared_vpc.private_subnet_id_1,

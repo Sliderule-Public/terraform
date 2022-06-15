@@ -54,3 +54,9 @@ variable "ecs_environments_touchable_by_external_account" {
   type = list(string)
   default = ["dev", "development", "staging", "stage"]
 }
+
+// Designates whether the external account can read Cloudwatch metrics
+variable "allow_external_account_read_metrics" {
+  type    = bool
+  default = true
+}

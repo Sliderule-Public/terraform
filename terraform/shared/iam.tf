@@ -91,4 +91,20 @@ data "aws_iam_policy_document" "cross_account" {
       "logs:FilterLogEvents"
     ]
   }
+
+  dynamic statement {
+    for_each = var.allow_external_account_read_metrics == true ? [1] : []
+    content {
+      // AWS IAM doesn't designate cloudwatch metric read permissions at the resource level, so the resource listed here is "*"
+      resources = ["*"]
+      actions = [
+        "cloudwatch:GetMetricData",
+        "cloudwatch:GetMetricStatistics",
+        "cloudwatch:GetMetricStream",
+        "cloudwatch:ListMetricStreams",
+        "cloudwatch:ListMetrics",
+        "cloudwatch:DescribeAlarmsForMetric"
+      ]
+    }
+  }
 }

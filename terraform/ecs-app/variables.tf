@@ -155,15 +155,15 @@ variable "auth0_secret" {
   type = string
 }
 variable "host_instance_type" {
-  type = string
+  type    = string
   default = "t3.xlarge"
 }
 variable "bastion_instance_type" {
-  type = string
+  type    = string
   default = "t3.small"
 }
 variable "database_instance_type" {
-  type = string
+  type    = string
   default = "db.t2.large"
 }
 variable "api_subdomains" {
@@ -173,6 +173,27 @@ variable "web_subdomains" {
   type = list(string)
 }
 variable "redis_node_type" {
-  type = string
+  type    = string
   default = "cache.m4.xlarge"
+}
+variable "use_variable_scripts" {
+  type        = bool
+  default     = false
+  description = "if true, null_resource resources will be used to run scripts that generate var files for kubernetes/aws/shieldrule"
+}
+variable "api_unhealthy_threshold" {
+  type    = number
+  default = 2
+}
+variable "api_health_check_interval" {
+  type    = number
+  default = 60
+}
+variable "api_health_check_timeout" {
+  type    = number
+  default = 10
+}
+variable "api_healthy_threshold" {
+  type    = number
+  default = 2
 }

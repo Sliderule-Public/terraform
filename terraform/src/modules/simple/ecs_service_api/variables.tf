@@ -74,3 +74,19 @@ variable "tags" {
 variable "host_listeners" {
   type = list(string)
 }
+variable "api_unhealthy_threshold" {
+  type    = number
+  default = 2
+}
+variable "api_health_check_interval" {
+  type    = number
+  default = 60
+}
+variable "api_health_check_timeout" {
+  type    = number
+  default = 10
+}
+variable "api_healthy_threshold" {
+  type    = number
+  default = 2
+}
