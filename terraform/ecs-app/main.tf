@@ -9,19 +9,27 @@ provider "grafana" {
 
 data "aws_caller_identity" "current" {}
 
-data "aws_route53_zone" "selected" {
-  count   = var.deploy_route53_resources == true ? length(var.hosted_zone_ids) : 0
-  zone_id = var.hosted_zone_ids[count.index]
+data "aws_route53_zone" "ecs_domain_names" {
+  count   = var.deploy_route53_resources == true ? length(var.ecs_domain_names) : 0
+  name = var.ecs_domain_names[count.index]
+}
+
+data "aws_route53_zone" "extra_domain_names" {
+  count   = var.deploy_route53_resources == true ? length(var.extra_domain_names) : 0
+  name = var.extra_domain_names[count.index]
 }
 
 
 locals {
-  account_id           = data.aws_caller_identity.current.account_id
-  zone_names           = [for zone in data.aws_route53_zone.selected : zone.name]
-  web_domains          = flatten([for subdomain in var.web_subdomains : [for name in local.zone_names : "${subdomain}.${name}"]])
-  api_domains          = flatten([for subdomain in var.api_subdomains : [for name in local.zone_names : "${subdomain}.${name}"]])
-  web_route53_entries  = flatten([for subdomain in var.web_subdomains : [for id in var.hosted_zone_ids : { subdomain : subdomain, id : id }]])
-  api_route53_entries  = flatten([for subdomain in var.api_subdomains : [for id in var.hosted_zone_ids : { subdomain : subdomain, id : id }]])
+  account_id          = data.aws_caller_identity.current.account_id
+  ecs_domains         = [for zone in data.aws_route53_zone.ecs_domain_names : zone.name]
+  extra_domains       = [for zone in data.aws_route53_zone.extra_domain_names : zone.name]
+  all_domains         = concat(local.ecs_domains, local.extra_domains)
+  all_zone_ids        = concat([for zone in data.aws_route53_zone.ecs_domain_names : zone.id], [for zone in data.aws_route53_zone.extra_domain_names : zone.id])
+  ecs_web_domains     = flatten([for subdomain in var.web_subdomains : [for name in local.ecs_domains : "${subdomain}.${name}"]])
+  ecs_api_domains     = flatten([for subdomain in var.api_subdomains : [for name in local.ecs_domains : "${subdomain}.${name}"]])
+  web_route53_entries = flatten([for subdomain in var.web_subdomains : [for id in local.all_zone_ids : { subdomain : subdomain, id : id }]])
+  api_route53_entries = flatten([for subdomain in var.api_subdomains : [for id in local.all_zone_ids : { subdomain : subdomain, id : id }]])
 }
 
 terraform {

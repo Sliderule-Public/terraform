@@ -103,13 +103,14 @@ resource "aws_lb_listener_rule" "grpc" {
 
   condition {
     host_header {
-      values = flatten([for name in var.domain_names: "${local.grpc_subdomain}.${name}"])
+      values = flatten([for name in var.domain_names : "${local.grpc_subdomain}.${name}"])
     }
   }
 }
 
 locals {
   grpc_subdomain = var.environment == "prod" ? "grpc" : "grpc-${var.environment}"
+  alarm_prefix   = replace(trim(substr("${var.company_name}-${var.environment}-${var.service_name}", 0, 32), "-"), "/(targetgroup/)|(/\\w+$)/", "")
 }
 
 data "aws_lb" "main" {
@@ -119,14 +120,14 @@ data "aws_lb" "main" {
 
 resource "aws_cloudwatch_metric_alarm" "target-healthy-count" {
   count               = var.load_balancer_arn != 0 ? 1 : 0
-  alarm_name          = "${replace(trim(substr("${var.company_name}-${var.environment}-${var.service_name}", 0, 32), "-"), "/(targetgroup/)|(/\\w+$)/", "")}-Healthy-Count"
-  comparison_operator = "LessThanOrEqualToThreshold"
+  alarm_name          = "${local.alarm_prefix}-Healthy-Count"
+  comparison_operator = "LessThanThreshold"
   evaluation_periods  = "1"
   metric_name         = "HealthyHostCount"
   namespace           = "AWS/ApplicationELB"
   period              = "60"
-  statistic           = "Average"
-  threshold           = "0"
+  statistic           = "Minimum"
+  threshold           = "1"
 
   dimensions = {
     LoadBalancer = data.aws_lb.main[0].arn_suffix
@@ -134,6 +135,105 @@ resource "aws_cloudwatch_metric_alarm" "target-healthy-count" {
   }
 
   alarm_description  = "Trigger an alert when ${trim(substr("${var.company_name}-${var.environment}-${var.service_name}", 0, 32), "-")} has 0 healthy hosts"
+  alarm_actions      = [var.sns_arn]
+  ok_actions         = [var.sns_arn]
+  treat_missing_data = "breaching"
+}
+
+resource "aws_cloudwatch_metric_alarm" "target-response-time" {
+  count               = var.load_balancer_arn != 0 ? 1 : 0
+  alarm_name          = "${local.alarm_prefix}-response-time"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "TargetResponseTime"
+  namespace           = "AWS/ApplicationELB"
+  period              = "180"
+  statistic           = "Average"
+  threshold           = "10"
+
+  dimensions = {
+    LoadBalancer = data.aws_lb.main[0].arn_suffix
+    TargetGroup  = aws_lb_target_group.tg.arn_suffix
+  }
+  alarm_actions      = [var.sns_arn]
+  ok_actions         = [var.sns_arn]
+  treat_missing_data = "notBreaching"
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "target-4xx-count" {
+  count               = var.load_balancer_arn != 0 ? 1 : 0
+  alarm_name          = "${local.alarm_prefix}-4xx-count"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "HTTPCode_Target_4XX_Count"
+  namespace           = "AWS/ApplicationELB"
+  period              = "180"
+  statistic           = "Average"
+  threshold           = "10"
+
+  dimensions = {
+    LoadBalancer = data.aws_lb.main[0].arn_suffix
+    TargetGroup  = aws_lb_target_group.tg.arn_suffix
+  }
+  alarm_actions      = [var.sns_arn]
+  ok_actions         = [var.sns_arn]
+  treat_missing_data = "notBreaching"
+}
+
+resource "aws_cloudwatch_metric_alarm" "target-5xx-count" {
+  count               = var.load_balancer_arn != 0 ? 1 : 0
+  alarm_name          = "${local.alarm_prefix}-5xx-count"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "HTTPCode_Target_5XX_Count"
+  namespace           = "AWS/ApplicationELB"
+  period              = "180"
+  statistic           = "Average"
+  threshold           = "10"
+
+  dimensions = {
+    LoadBalancer = data.aws_lb.main[0].arn_suffix
+    TargetGroup  = aws_lb_target_group.tg.arn_suffix
+  }
+  alarm_actions      = [var.sns_arn]
+  ok_actions         = [var.sns_arn]
+  treat_missing_data = "notBreaching"
+}
+
+resource "aws_cloudwatch_metric_alarm" "service-cpu" {
+  alarm_name          = "${local.alarm_prefix}-service-cpu"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = "300"
+  statistic           = "Average"
+  threshold           = "80"
+
+  dimensions = {
+    ClusterName = "${var.company_name}-${var.environment}-services"
+    ServiceName = aws_ecs_service.service.name
+  }
+  alarm_actions      = [var.sns_arn]
+  ok_actions         = [var.sns_arn]
+  treat_missing_data = "breaching"
+}
+
+resource "aws_cloudwatch_metric_alarm" "service-memory" {
+  alarm_name          = "${local.alarm_prefix}-service-memory"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "MemoryUtilization"
+  namespace           = "AWS/ECS"
+  period              = "300"
+  statistic           = "Average"
+  threshold           = "80"
+
+  dimensions = {
+    ClusterName = "${var.company_name}-${var.environment}-services"
+    ServiceName = aws_ecs_service.service.name
+  }
   alarm_actions      = [var.sns_arn]
   ok_actions         = [var.sns_arn]
   treat_missing_data = "breaching"

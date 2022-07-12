@@ -72,3 +72,44 @@ module "api_task_definition" {
   ]
   tags = var.tags
 }
+
+module "jobs_task_definition" {
+  source             = "../src/modules/simple/ecs_service_task_definition"
+  environment        = var.environment
+  image_tag          = var.environment
+  company_name       = var.company_name
+  kms_key_arn        = module.main_key.key_arn
+  account_id         = local.account_id
+  memory             = 3900
+  cpu                = 900
+  image_name         = "shieldrule-api"
+  task_name          = "${var.app_name}-jobs"
+  region             = var.region
+  execution_role_arn = module.ecs_task_execution_role.role_arn
+  task_role_arn      = module.ecs_task_role.role_arn
+  user               = "nobody"
+  linuxParameters = {
+    tmpfs = [{
+      containerPath = "/tmp"
+      size          = 20
+      mountOptions  = []
+    }]
+  }
+  environmentOverrides = [
+    {
+      name  = "ECS_ENABLE_CONTAINER_METADATA",
+      value = "true"
+    },
+    {
+      name  = "ENVIRONMENT",
+      value = var.environment
+    }
+  ]
+  environmentFiles = [
+    {
+      type : "s3",
+      value : "${module.infrastructure_bucket.bucket_arn}/env-files/api/${var.environment}.env"
+    }
+  ]
+  tags = var.tags
+}

@@ -62,6 +62,7 @@
 | Name | Type |
 |------|------|
 | [aws_cloudwatch_metric_alarm.alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) | resource |
+| [aws_lb_listener_rule.redirects](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener_rule) | resource |
 | [aws_s3_bucket_object.object](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object) | resource |
 | [aws_sns_topic.alarms](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) | resource |
 | [aws_sns_topic_subscription.ecs_alarms_email_subscription](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic_subscription) | resource |
@@ -88,7 +89,8 @@
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.main_kms_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.task](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_route53_zone.selected](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
+| [aws_route53_zone.ecs_domain_names](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
+| [aws_route53_zone.extra_domain_names](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
 
 ## Inputs
 
@@ -120,14 +122,16 @@
 | <a name="input_deploy_route53_resources"></a> [deploy\_route53\_resources](#input\_deploy\_route53\_resources) | n/a | `bool` | `true` | no |
 | <a name="input_desired_task_count_api"></a> [desired\_task\_count\_api](#input\_desired\_task\_count\_api) | n/a | `number` | `3` | no |
 | <a name="input_desired_task_count_web"></a> [desired\_task\_count\_web](#input\_desired\_task\_count\_web) | n/a | `number` | `2` | no |
+| <a name="input_domains_to_redirect"></a> [domains\_to\_redirect](#input\_domains\_to\_redirect) | n/a | <pre>list(object({<br>    from = string<br>    to   = string<br>  }))</pre> | `[]` | no |
 | <a name="input_ecs_alarms_email_recipients"></a> [ecs\_alarms\_email\_recipients](#input\_ecs\_alarms\_email\_recipients) | n/a | `list(string)` | `[]` | no |
+| <a name="input_ecs_domain_names"></a> [ecs\_domain\_names](#input\_ecs\_domain\_names) | Domain names, which when combined with var.web\_subdomains and var.api\_subdomains, create the domains that your ECS services will listen on. If var.deploy\_route53\_resources is set to true, subdomains will also be created in the Route 53 hosted zones for these domain names. | `list(string)` | n/a | yes |
 | <a name="input_ecs_host_ami"></a> [ecs\_host\_ami](#input\_ecs\_host\_ami) | n/a | `string` | `""` | no |
 | <a name="input_elb_idle_timeout"></a> [elb\_idle\_timeout](#input\_elb\_idle\_timeout) | n/a | `number` | `60` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |
+| <a name="input_extra_domain_names"></a> [extra\_domain\_names](#input\_extra\_domain\_names) | If var.deploy\_route53\_resources is set to true, subdomains will be created in the Route 53 hosted zones for these optional extra domain names. This is only offered to create extra Route 53 entries and can be left empty at any time. | `list(string)` | `[]` | no |
 | <a name="input_grafana_auth"></a> [grafana\_auth](#input\_grafana\_auth) | n/a | `string` | `""` | no |
 | <a name="input_grafana_email_recipients"></a> [grafana\_email\_recipients](#input\_grafana\_email\_recipients) | n/a | `string` | `""` | no |
 | <a name="input_host_instance_type"></a> [host\_instance\_type](#input\_host\_instance\_type) | n/a | `string` | `"t3.xlarge"` | no |
-| <a name="input_hosted_zone_ids"></a> [hosted\_zone\_ids](#input\_hosted\_zone\_ids) | n/a | `list(string)` | n/a | yes |
 | <a name="input_initial_database"></a> [initial\_database](#input\_initial\_database) | n/a | `string` | n/a | yes |
 | <a name="input_kms_grantees"></a> [kms\_grantees](#input\_kms\_grantees) | n/a | `list(string)` | n/a | yes |
 | <a name="input_master_db_password"></a> [master\_db\_password](#input\_master\_db\_password) | n/a | `string` | n/a | yes |

@@ -39,8 +39,14 @@ variable "master_db_username" {
 variable "master_db_password" {
   type = string
 }
-variable "hosted_zone_ids" {
-  type = list(string)
+variable "ecs_domain_names" {
+  type        = list(string)
+  description = "Domain names, which when combined with var.web_subdomains and var.api_subdomains, create the domains that your ECS services will listen on. If var.deploy_route53_resources is set to true, subdomains will also be created in the Route 53 hosted zones for these domain names."
+}
+variable "extra_domain_names" {
+  type        = list(string)
+  default     = []
+  description = "If var.deploy_route53_resources is set to true, subdomains will be created in the Route 53 hosted zones for these optional extra domain names. This is only offered to create extra Route 53 entries and can be left empty at any time."
 }
 variable "grafana_auth" {
   type    = string
@@ -196,4 +202,11 @@ variable "api_health_check_timeout" {
 variable "api_healthy_threshold" {
   type    = number
   default = 2
+}
+variable "domains_to_redirect" {
+  type = list(object({
+    from = string
+    to   = string
+  }))
+  default = []
 }

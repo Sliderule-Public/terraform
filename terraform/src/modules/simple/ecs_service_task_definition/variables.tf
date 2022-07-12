@@ -26,7 +26,8 @@ variable "memory" {
   type = number
 }
 variable "container_port" {
-  type = number
+  type    = number
+  default = null
 }
 variable "execution_role_arn" {
   type = string

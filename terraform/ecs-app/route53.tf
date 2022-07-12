@@ -19,10 +19,10 @@ module "api_route53_record" {
 }
 
 module "grpc_record" {
-  count          = var.deploy_route53_resources == true ? length(var.hosted_zone_ids) : 0
+  count          = var.deploy_route53_resources == true ? length(local.all_zone_ids) : 0
   source         = "../src/modules/simple/route53_record"
   name           = var.environment == "prod" ? "grpc" : "grpc-${var.environment}"
-  zone_id        = var.hosted_zone_ids[count.index]
+  zone_id        = local.all_zone_ids[count.index]
   target         = module.shared_ecs_load_balancer.dns_name
   target_zone_id = module.shared_ecs_load_balancer.lb_hosted_zone
   tags           = var.tags

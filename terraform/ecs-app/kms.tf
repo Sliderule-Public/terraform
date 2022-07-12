@@ -62,7 +62,7 @@ data "aws_iam_policy_document" "main_kms_key" {
   }
 
   # Additional services to grant access. One example is SES
-  dynamic statement {
+  dynamic "statement" {
     for_each = length(var.services_to_grant_kms_access_to) > 0 ? [1] : []
     content {
       effect = "Allow"

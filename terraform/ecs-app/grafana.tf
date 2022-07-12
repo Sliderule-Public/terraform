@@ -46,7 +46,7 @@ resource "grafana_alert_notification" "email" {
   type          = "email"
   is_default    = true
   send_reminder = false
-  frequency = "10m"
+  frequency     = "10m"
 
   settings = {
     addresses   = var.grafana_email_recipients

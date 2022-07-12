@@ -10,3 +10,8 @@ spec:
     - port: 8000
       targetPort: 8000
       nodePort: {{ .Values.ports.api }}
+      name: api
+    - port: 9520
+      targetPort: 9520
+      nodePort: {{ .Values.ports.grpc }}
+      name: grpc

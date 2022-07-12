@@ -84,6 +84,7 @@ affinity: {}
 ports:
   web: 31255
   api: 31257
+  grpc: 31258
 
 RESET_DB: false
 USE_AUTH_0: true

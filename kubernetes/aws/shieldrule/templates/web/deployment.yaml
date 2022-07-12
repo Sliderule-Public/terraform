@@ -16,7 +16,7 @@ spec:
         role: shieldrule-web-role
     spec:
       containers:
-        - image: "600592424179.dkr.ecr.us-west-1.amazonaws.com/shieldrule-web:{{ .Values.ENVIRONMENT }}"
+        - image: "600592424179.dkr.ecr.us-west-1.amazonaws.com/shieldrule-web:{{ .Values.SHIELDRULE_ENVIRONMENT }}"
           name: shieldrule-web
           ports:
             - containerPort: 8000
