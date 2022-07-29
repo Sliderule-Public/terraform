@@ -8,7 +8,7 @@ module "main_key" {
   tags         = var.tags
   policy       = data.aws_iam_policy_document.main_kms_key.json
   usage_grantee_arns = concat(var.kms_grantees, [
-    module.eks_task_role.role_arn,
+    aws_iam_role.eks-tasks.arn,
   ])
 }
 

@@ -155,7 +155,8 @@ resource "aws_subnet" "public0" {
     {
       Name = "${var.company_name}-${var.environment}-${var.vpc_name}-public-0"
       Tier = "Public"
-    }
+      "kubernetes.io/role/elb" = 1
+    },
   )
 }
 
@@ -170,6 +171,7 @@ resource "aws_subnet" "public1" {
     {
       Name = "${var.company_name}-${var.environment}-${var.vpc_name}-public-1"
       Tier = "Public"
+      "kubernetes.io/role/elb" = 1
     }
   )
 }
@@ -189,6 +191,7 @@ resource "aws_subnet" "private0" {
     {
       Name = "${var.company_name}-${var.environment}-${var.vpc_name}-private-0"
       Tier = "Private"
+      "kubernetes.io/role/internal-elb" = 1
     }
   )
 }
@@ -203,6 +206,7 @@ resource "aws_subnet" "private1" {
     {
       Name = "${var.company_name}-${var.environment}-${var.vpc_name}-private-1"
       Tier = "Private"
+      "kubernetes.io/role/internal-elb" = 1
     }
   )
 }
@@ -222,6 +226,7 @@ resource "aws_subnet" "private_app_0" {
     {
       Name = "${var.company_name}-${var.environment}-${var.vpc_name}-private-app-1"
       Tier = "Private"
+      "kubernetes.io/role/internal-elb" = 1
     }
   )
 }
@@ -236,6 +241,7 @@ resource "aws_subnet" "private_app_1" {
     {
       Name = "${var.company_name}-${var.environment}-${var.vpc_name}-private-app-2"
       Tier = "Private"
+      "kubernetes.io/role/internal-elb" = 1
     }
   )
 }

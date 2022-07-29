@@ -47,7 +47,7 @@ variable "tags" {
 }
 variable "instance_type" {
   type    = string
-  default = "db.t2.large"
+  default = "db.t3.xlarge"
 }
 variable "availability_zone" {
   type = string
@@ -55,4 +55,12 @@ variable "availability_zone" {
 variable "skip_final_snapshot" {
   type    = bool
   default = false
+}
+variable "name_override" {
+  type    = string
+  default = "new-public"
+  description = "This is a workaround for incompatibility for two stacks that use this module, ecs-app and eks-app"
+}
+variable "sns_arn" {
+  type        = string
 }

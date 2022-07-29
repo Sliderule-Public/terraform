@@ -1,8 +1,0 @@
-aws_region=
-k8s_namespace=
-role_arn=
-cluster_id=
-certificate_data=
-role_name=
-issuer=
-endpoint=

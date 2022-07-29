@@ -170,7 +170,7 @@ variable "bastion_instance_type" {
 }
 variable "database_instance_type" {
   type    = string
-  default = "db.t2.large"
+  default = "db.t3.xlarge"
 }
 variable "api_subdomains" {
   type = list(string)
@@ -209,4 +209,34 @@ variable "domains_to_redirect" {
     to   = string
   }))
   default = []
+}
+variable "deploy_eks" {
+  type        = bool
+  default     = false
+  description = "if true, a new EKS cluster and surrounding resources are created"
+}
+variable "deploy_ecs" {
+  type        = bool
+  default     = true
+  description = "if true, a new ECS cluster and surrounding resources are created"
+}
+variable "upload_env_file" {
+  type        = bool
+  default     = false
+  description = "if true, an env file is uploaded automatically to S3 for use with ECS API containers"
+}
+variable "web_eks_port" {
+  type        = number
+  default     = 31255
+  description = "optional. used in helm to expose the web service through security group rules"
+}
+variable "docs_eks_port" {
+  type        = number
+  default     = 31256
+  description = "optional. used in helm to expose the docs service through security group rules"
+}
+variable "api_eks_port" {
+  type        = number
+  default     = 31257
+  description = "optional. used in helm to expose the API service through security group rules"
 }

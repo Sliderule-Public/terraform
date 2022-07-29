@@ -13,5 +13,4 @@ spec:
       name: api
     - port: 9520
       targetPort: 9520
-      nodePort: {{ .Values.ports.grpc }}
       name: grpc

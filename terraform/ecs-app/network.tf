@@ -198,3 +198,35 @@ module "shared_bastion_security_group" {
     }
   ]
 }
+
+module "pod_security_group" {
+  source              = "../src/modules/simple/vpc_security_group"
+  environment         = var.environment
+  company_name        = var.company_name
+  tags                = var.tags
+  security_group_name = "eks-pods"
+  vpc_id              = module.shared_vpc.vpc_id
+  ingress_rules = [
+    {
+      from_port   = var.web_eks_port
+      to_port     = var.web_eks_port
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+      description = "web eks port"
+    },
+    {
+      from_port   = var.docs_eks_port
+      to_port     = var.docs_eks_port
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+      description = "docs eks port"
+    },
+    {
+      from_port   = var.api_eks_port
+      to_port     = var.api_eks_port
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+      description = "api eks port"
+    }
+  ]
+}

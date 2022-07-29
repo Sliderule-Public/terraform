@@ -124,5 +124,14 @@ variable "api_eks_port" {
 variable "use_variable_scripts" {
   type = bool
   default = false
-  description = "if true, null_resource resources will be used to run scripts that generate var files for eks-oidc and kubernetes/aws/shieldrule"
+  description = "if true, null_resource resources will be used to run scripts that generate var files for kubernetes/aws/shieldrule"
+}
+variable "certificate_arn" {
+  default = ""
+  description = "ARN of the AWS ACM certificate to use with optional EKS-made application load balancers. Only required if var.use_scripts is true and you're using Sliderule-provided AWS EKS ALB functionality."
+  type = string
+}
+variable "database_instance_type" {
+  type    = string
+  default = "db.t3.xlarge"
 }

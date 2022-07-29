@@ -19,25 +19,35 @@ resource "aws_db_parameter_group" "ssl_param_group" {
     name  = "rds.force_ssl"
     value = 1
   }
+
+  parameter {
+    name  = "log_min_duration_statement"
+    value = 5000
+  }
+}
+
+locals {
+  name_prefix   = "${var.company_name}-${var.environment}-${var.cluster_name}"
+  instance_name = "${local.name_prefix}-${var.name_override}"
 }
 
 resource "aws_db_instance" "new_public" {
-  identifier             = "${var.company_name}-${var.environment}-${var.cluster_name}-new-public"
-  allocated_storage      = 100
-  engine                 = "postgres"
-  engine_version         = "11.13"
+  identifier                 = local.instance_name
+  allocated_storage          = 100
+  engine                     = "postgres"
+  engine_version             = "11.13"
   auto_minor_version_upgrade = false
-  deletion_protection    = true
-  multi_az               = true
-  publicly_accessible    = true
-  vpc_security_group_ids = [var.security_group]
-  instance_class         = var.instance_type
-  name                   = var.initial_database
-  kms_key_id             = var.kms_key_arn
-  db_subnet_group_name   = aws_db_subnet_group.public.name
-  username               = var.master_username
-  password               = var.master_password
-  parameter_group_name   = aws_db_parameter_group.ssl_param_group.id
+  deletion_protection        = true
+  multi_az                   = true
+  publicly_accessible        = true
+  vpc_security_group_ids     = [var.security_group]
+  instance_class             = var.instance_type
+  name                       = var.initial_database
+  kms_key_id                 = var.kms_key_arn
+  db_subnet_group_name       = aws_db_subnet_group.public.name
+  username                   = var.master_username
+  password                   = var.master_password
+  parameter_group_name       = aws_db_parameter_group.ssl_param_group.id
   //  availability_zone        = var.availability_zone
   backup_retention_period  = 7
   backup_window            = "07:31-11:31"
@@ -58,5 +68,39 @@ resource "aws_db_instance" "new_public" {
     ignore_changes = [
       kms_key_id
     ]
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "cpu-usage" {
+  alarm_name          = "${local.name_prefix}-cpu-usage"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/RDS"
+  period              = "300"
+  statistic           = "Average"
+  threshold           = "90"
+  alarm_actions       = [var.sns_arn]
+  ok_actions          = [var.sns_arn]
+  treat_missing_data  = "notBreaching"
+  dimensions = {
+    DBInstanceIdentifier = local.instance_name
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "free-space" {
+  alarm_name          = "${local.name_prefix}-free-space"
+  comparison_operator = "LessThanOrEqualToThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "FreeStorageSpace"
+  namespace           = "AWS/RDS"
+  period              = "300"
+  statistic           = "Average"
+  threshold           = "10737418240" # 10 GB
+  alarm_actions       = [var.sns_arn]
+  ok_actions          = [var.sns_arn]
+  treat_missing_data  = "notBreaching"
+  dimensions = {
+    DBInstanceIdentifier = local.instance_name
   }
 }

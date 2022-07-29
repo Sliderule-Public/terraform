@@ -23,17 +23,7 @@ module "rds_role" {
   EOF
 }
 
-module "eks_task_role" {
-  environment  = var.environment
-  company_name = var.company_name
-  tags         = var.tags
-  source       = "../src/modules/simple/iam_role"
-  role_name    = "eks-tasks"
-  service      = "eks.amazonaws.com"
-  policy       = data.aws_iam_policy_document.task.json
-}
-
-data "aws_iam_policy_document" "task" {
+data "aws_iam_policy_document" "eks_task" {
   dynamic "statement" {
     for_each = var.server_iam_role_policy_statements
     content {
@@ -66,9 +56,23 @@ data "aws_iam_policy_document" "task" {
   }
 }
 
+data "tls_certificate" "main" {
+  url = aws_eks_cluster.main[0].identity[0].oidc[0].issuer
+}
+resource "aws_iam_openid_connect_provider" "main" {
+  url = aws_eks_cluster.main[0].identity[0].oidc[0].issuer
+
+  client_id_list = [
+    "sts.amazonaws.com",
+  ]
+
+  thumbprint_list = [
+    data.tls_certificate.main.certificates.0.sha1_fingerprint
+  ]
+}
+
 resource "aws_iam_role" "eks" {
-  count    = var.deploy_eks == true ? 1 : 0
-  name = "${var.environment}-eks"
+  name  = "${var.environment}-eks"
 
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",

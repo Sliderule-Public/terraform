@@ -58,22 +58,6 @@ resource "null_resource" "populate_pod_values" {
   count = var.use_variable_scripts == true ? 1 : 0
   depends_on = [aws_eks_cluster.main, null_resource.prepare_kubernetes_yaml_file]
   provisioner "local-exec" {
-    command = "bash ../bin/populate_pod_values.sh ${var.environment} ${module.pod_security_group.security_group_id} ${module.eks_task_role.role_arn}"
-  }
-}
-
-resource "null_resource" "prepare_eks_oidc_vars" {
-  count      = var.deploy_eks == true && var.use_variable_scripts == true ? 1 : 0
-  depends_on = [aws_eks_cluster.main, null_resource.populate_pod_values]
-  provisioner "local-exec" {
-    command = "bash ../bin/prepare_eks_oidc_vars.sh ${var.environment} ${var.region} ${module.eks_task_role.role_arn} ${aws_eks_cluster.main[0].id} ${aws_eks_cluster.main[0].certificate_authority[0].data} ${module.eks_task_role.role_name} ${aws_eks_cluster.main[0].identity[0].oidc[0].issuer} ${aws_eks_cluster.main[0].endpoint}"
-  }
-}
-
-resource "null_resource" "prepare_eks_oidc_vars_no_cluster" {
-  count      = var.deploy_eks == true || var.use_variable_scripts == false ? 0 : 1
-  depends_on = [aws_eks_cluster.main, null_resource.populate_pod_values]
-  provisioner "local-exec" {
-    command = "bash ../bin/prepare_eks_oidc_vars_no_cluster.sh ${var.environment} ${var.region} ${module.eks_task_role.role_arn} ${module.eks_task_role.role_name}"
+    command = "bash ../bin/populate_pod_values.sh ${var.environment} ${module.pod_security_group.security_group_id} ${aws_iam_role.eks-tasks.arn} ${aws_iam_role.eks-alb-controller.arn} ${var.certificate_arn}"
   }
 }

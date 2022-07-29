@@ -46,6 +46,22 @@ resource "null_resource" "populate_generic_values" {
   }
 }
 
+resource "null_resource" "prepare_kubernetes_yaml_file" {
+  count = var.use_variable_scripts == true ? 1 : 0
+  depends_on = [aws_eks_cluster.main, null_resource.populate_generic_values]
+  provisioner "local-exec" {
+    command = "bash ../bin/prepare_kubernetes_yaml_file.sh ${var.environment}"
+  }
+}
+
+resource "null_resource" "populate_pod_values" {
+  count = var.use_variable_scripts == true ? 1 : 0
+  depends_on = [aws_eks_cluster.main, null_resource.prepare_kubernetes_yaml_file]
+  provisioner "local-exec" {
+    command = "bash ../bin/populate_pod_values.sh ${var.environment} ${module.pod_security_group.security_group_id} ${aws_iam_role.eks-tasks[0].arn} ${aws_iam_role.eks-alb-controller[0].arn} ${var.certificate_arn}"
+  }
+}
+
 resource "null_resource" "create_auth0_user" {
   count      = var.use_variable_scripts == true ? 1 : 0
   depends_on = [module.rds_instance, module.shared_bastion_auto_scaling_group]

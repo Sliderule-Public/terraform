@@ -15,12 +15,21 @@ spec:
         app: shieldrule-web
         role: shieldrule-web-role
     spec:
+      {{ if .Values.service_account_role }}
+      serviceAccountName: aws-role
+      {{ end }}
       containers:
         - image: "600592424179.dkr.ecr.us-west-1.amazonaws.com/shieldrule-web:{{ .Values.SHIELDRULE_ENVIRONMENT }}"
           name: shieldrule-web
           ports:
             - containerPort: 8000
-          resources: {}
+          resources:
+            requests:
+              memory: "1024Mi"
+              cpu: "512m"
+            limits:
+              memory: "1024Mi"
+              cpu: "512m"
           securityContext:
             capabilities:
               drop:
@@ -28,6 +37,12 @@ spec:
           volumeMounts:
             - mountPath: /var/cache/nginx
               name: shieldrule-web-tmpfs0
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 3
       restartPolicy: Always
       volumes:
         - emptyDir:
