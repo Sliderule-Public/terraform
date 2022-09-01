@@ -19,4 +19,5 @@ module "rds_instance" {
   name_override       = "public" # Workaround for compatibility issues with the other stack that uses this module, `ecs-app`
   sns_arn             = aws_sns_topic.alarms.arn
   instance_type       = var.database_instance_type
+  deploy_read_replica = false
 }

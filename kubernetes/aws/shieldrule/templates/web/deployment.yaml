@@ -20,16 +20,17 @@ spec:
       {{ end }}
       containers:
         - image: "600592424179.dkr.ecr.us-west-1.amazonaws.com/shieldrule-web:{{ .Values.SHIELDRULE_ENVIRONMENT }}"
+          imagePullPolicy: Always
           name: shieldrule-web
           ports:
             - containerPort: 8000
           resources:
             requests:
-              memory: "1024Mi"
-              cpu: "512m"
+              memory: {{ .Values.web.resources.requests.memory }}
+              cpu: {{ .Values.web.resources.requests.cpu }}
             limits:
-              memory: "1024Mi"
-              cpu: "512m"
+              memory: {{ .Values.web.resources.limits.memory }}
+              cpu: {{ .Values.web.resources.limits.cpu }}
           securityContext:
             capabilities:
               drop:
@@ -43,6 +44,52 @@ spec:
               port: 8000
             initialDelaySeconds: 10
             periodSeconds: 3
+          envFrom:
+            - secretRef:
+                name: api-secret
+          env:
+            - name: POSTGRES_HOST
+              value: {{ .Values.POSTGRES_HOST| quote }}
+            - name: POSTGRES_PORT
+              value: {{ .Values.POSTGRES_PORT | quote }}
+            - name: POSTGRES_DB
+              value: {{ .Values.POSTGRES_DB | quote }}
+            - name: AUDIENCE_URL
+              value: {{ .Values.AUDIENCE_URL | quote }}
+            - name: ISSUER_URL
+              value: {{ .Values.ISSUER_URL | quote }}
+            - name: AUTH0_ENVIRONMENT_PREFIX
+              value: {{ .Values.AUTH0_ENVIRONMENT_PREFIX | quote }}
+            - name: RESET_DB
+              value: {{ .Values.RESET_DB | quote }}
+            - name: USE_AUTH_0
+              value: {{ .Values.USE_AUTH_0 | quote }}
+            - name: ENVIRONMENT
+              value: {{ .Values.ENVIRONMENT | quote }}
+            - name: SENTRY_ENVIRONMENT
+              value: {{ .Values.SENTRY_ENVIRONMENT | quote }}
+            - name: METRICS_NAMESPACE
+              value: {{ .Values.METRICS_NAMESPACE | quote }}
+            - name: SLACK_REDIRECT_URI
+              value: {{ .Values.SLACK_REDIRECT_URI | quote }}
+            - name: SHIELDRULE_ENVIRONMENT
+              value: {{ .Values.SHIELDRULE_ENVIRONMENT | quote }}
+            - name: USE_INSTANCE_PROFILE
+              value: {{ .Values.USE_INSTANCE_PROFILE | quote }}
+            - name: SERVER_BUCKET
+              value: {{ .Values.SERVER_BUCKET | quote }}
+            - name: REDIS_HOST
+              value: {{ .Values.REDIS_HOST | quote }}
+            - name: REDIS_PORT
+              value: {{ .Values.REDIS_PORT | quote }}
+            - name: USE_REDIS
+              value: {{ .Values.USE_REDIS | quote }}
+            - name: USE_SQS
+              value: {{ .Values.USE_SQS | quote }}
+            - name: SQS_QUEUE_NAME
+              value: {{ .Values.SQS_QUEUE_NAME | quote }}
+            - name: SQS_URL
+              value: {{ .Values.SQS_URL | quote }}
       restartPolicy: Always
       volumes:
         - emptyDir:

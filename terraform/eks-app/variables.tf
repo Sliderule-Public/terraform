@@ -135,3 +135,17 @@ variable "database_instance_type" {
   type    = string
   default = "db.t3.xlarge"
 }
+variable "eks_cluster_name" {
+  type    = string
+  default = ""
+  description = "Name of EKS cluster to be used to create OIDC providers for IAM roles. Only required if deploy_eks is false"
+}
+variable "app_name" {
+  type = string
+  default = "shieldrule"
+  description = "used to build an SSH key name for the optional EKS node group."
+}
+variable "iam_arns_to_grant_sns_kms_access_to" {
+  type    = list(string)
+  default = []
+}

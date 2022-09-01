@@ -18,4 +18,5 @@ module "rds_instance" {
   skip_final_snapshot = var.skip_final_snapshot
   instance_type       = var.database_instance_type
   sns_arn             = aws_sns_topic.alarms.arn
+  deploy_read_replica = var.deploy_read_replica
 }

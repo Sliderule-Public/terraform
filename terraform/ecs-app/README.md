@@ -165,10 +165,10 @@ No outputs.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.27 |
-| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | ~> 1.12.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | n/a |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.75.2 |
+| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | 1.12.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.1.1 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | 4.0.2 |
 
 ## Modules
 
@@ -208,9 +208,11 @@ No outputs.
 | <a name="module_shared_ecs_launch_template"></a> [shared\_ecs\_launch\_template](#module\_shared\_ecs\_launch\_template) | ../src/modules/simple/launch_template | n/a |
 | <a name="module_shared_ecs_load_balancer"></a> [shared\_ecs\_load\_balancer](#module\_shared\_ecs\_load\_balancer) | ../src/modules/simple/load_balancer | n/a |
 | <a name="module_shared_ecs_service_security_group"></a> [shared\_ecs\_service\_security\_group](#module\_shared\_ecs\_service\_security\_group) | ../src/modules/simple/vpc_security_group | n/a |
+| <a name="module_shared_eks_launch_template"></a> [shared\_eks\_launch\_template](#module\_shared\_eks\_launch\_template) | ../src/modules/simple/launch_template | n/a |
 | <a name="module_shared_launch_template_security_group"></a> [shared\_launch\_template\_security\_group](#module\_shared\_launch\_template\_security\_group) | ../src/modules/simple/vpc_security_group | n/a |
 | <a name="module_shared_load_balancer_security_group"></a> [shared\_load\_balancer\_security\_group](#module\_shared\_load\_balancer\_security\_group) | ../src/modules/simple/vpc_security_group | n/a |
 | <a name="module_shared_vpc"></a> [shared\_vpc](#module\_shared\_vpc) | ../src/modules/composite/vpc | n/a |
+| <a name="module_sns_key"></a> [sns\_key](#module\_sns\_key) | ../src/modules/simple/kms_key | n/a |
 | <a name="module_sqs"></a> [sqs](#module\_sqs) | ../src/modules/simple/sqs_queue | n/a |
 | <a name="module_web_ecs_service"></a> [web\_ecs\_service](#module\_web\_ecs\_service) | ../src/modules/simple/ecs_service | n/a |
 | <a name="module_web_route53_record"></a> [web\_route53\_record](#module\_web\_route53\_record) | ../src/modules/simple/route53_record | n/a |
@@ -226,6 +228,7 @@ No outputs.
 | [aws_iam_openid_connect_provider.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_openid_connect_provider) | resource |
 | [aws_iam_role.eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.eks-alb-controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role.eks-autoscaler](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.eks-tasks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_lb_listener_rule.redirects](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener_rule) | resource |
 | [aws_s3_bucket_object.object](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object) | resource |
@@ -247,15 +250,18 @@ No outputs.
 | [null_resource.populate_db_values](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.populate_generic_values](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.populate_pod_values](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.populate_prerequisite_values](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.populate_redis_values](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.populate_s3_values](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.populate_sqs_values](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.prepare_kubernetes_yaml_file](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [aws_ami.ecs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
+| [aws_ami.eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ami.ubuntu](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.eks_task](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.main_kms_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.sns_kms_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.task](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_route53_zone.ecs_domain_names](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
 | [aws_route53_zone.extra_domain_names](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
@@ -291,6 +297,7 @@ No outputs.
 | <a name="input_deploy_ecs"></a> [deploy\_ecs](#input\_deploy\_ecs) | if true, a new ECS cluster and surrounding resources are created | `bool` | `true` | no |
 | <a name="input_deploy_eks"></a> [deploy\_eks](#input\_deploy\_eks) | if true, a new EKS cluster and surrounding resources are created | `bool` | `false` | no |
 | <a name="input_deploy_grafana_resources"></a> [deploy\_grafana\_resources](#input\_deploy\_grafana\_resources) | n/a | `bool` | `"false"` | no |
+| <a name="input_deploy_read_replica"></a> [deploy\_read\_replica](#input\_deploy\_read\_replica) | Whether to add a read replica | `bool` | `false` | no |
 | <a name="input_deploy_route53_resources"></a> [deploy\_route53\_resources](#input\_deploy\_route53\_resources) | n/a | `bool` | `true` | no |
 | <a name="input_desired_task_count_api"></a> [desired\_task\_count\_api](#input\_desired\_task\_count\_api) | n/a | `number` | `3` | no |
 | <a name="input_desired_task_count_web"></a> [desired\_task\_count\_web](#input\_desired\_task\_count\_web) | n/a | `number` | `2` | no |
@@ -305,6 +312,7 @@ No outputs.
 | <a name="input_grafana_auth"></a> [grafana\_auth](#input\_grafana\_auth) | n/a | `string` | `""` | no |
 | <a name="input_grafana_email_recipients"></a> [grafana\_email\_recipients](#input\_grafana\_email\_recipients) | n/a | `string` | `""` | no |
 | <a name="input_host_instance_type"></a> [host\_instance\_type](#input\_host\_instance\_type) | n/a | `string` | `"t3.xlarge"` | no |
+| <a name="input_iam_arns_to_grant_sns_kms_access_to"></a> [iam\_arns\_to\_grant\_sns\_kms\_access\_to](#input\_iam\_arns\_to\_grant\_sns\_kms\_access\_to) | n/a | `list(string)` | `[]` | no |
 | <a name="input_initial_database"></a> [initial\_database](#input\_initial\_database) | n/a | `string` | n/a | yes |
 | <a name="input_kms_grantees"></a> [kms\_grantees](#input\_kms\_grantees) | n/a | `list(string)` | n/a | yes |
 | <a name="input_master_db_password"></a> [master\_db\_password](#input\_master\_db\_password) | n/a | `string` | n/a | yes |

@@ -49,6 +49,10 @@ variable "instance_type" {
   type    = string
   default = "db.t3.xlarge"
 }
+variable "reader_instance_type" {
+  type    = string
+  default = "db.t3.xlarge"
+}
 variable "availability_zone" {
   type = string
 }
@@ -57,10 +61,16 @@ variable "skip_final_snapshot" {
   default = false
 }
 variable "name_override" {
-  type    = string
-  default = "new-public"
+  type        = string
+  default     = "new-public"
   description = "This is a workaround for incompatibility for two stacks that use this module, ecs-app and eks-app"
 }
 variable "sns_arn" {
-  type        = string
+  type = string
+}
+
+variable "deploy_read_replica" {
+  type        = bool
+  default     = false
+  description = "Whether to add a read replica"
 }

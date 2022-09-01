@@ -15,6 +15,12 @@ module "web_task_definition" {
   task_role_arn      = module.ecs_task_role.role_arn
   read_only          = false
   user               = "nginx"
+  environmentFiles = [
+    {
+      type : "s3",
+      value : "${module.infrastructure_bucket.bucket_arn}/env-files/api/${var.environment}.env"
+    }
+  ]
   linuxParameters = {
     tmpfs = [{
       containerPath = "/var/cache/nginx"

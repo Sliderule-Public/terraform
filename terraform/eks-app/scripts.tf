@@ -54,10 +54,18 @@ resource "null_resource" "prepare_kubernetes_yaml_file" {
   }
 }
 
+resource "null_resource" "populate_prerequisite_values" {
+  count = var.use_variable_scripts == true ? 1 : 0
+  depends_on = [aws_eks_cluster.main, null_resource.prepare_kubernetes_yaml_file]
+  provisioner "local-exec" {
+    command = "bash ../bin/populate_prerequisite_values.sh ${var.environment} ${aws_iam_role.eks-alb-controller.arn} ${aws_iam_role.eks-autoscaler[0].arn}"
+  }
+}
+
 resource "null_resource" "populate_pod_values" {
   count = var.use_variable_scripts == true ? 1 : 0
   depends_on = [aws_eks_cluster.main, null_resource.prepare_kubernetes_yaml_file]
   provisioner "local-exec" {
-    command = "bash ../bin/populate_pod_values.sh ${var.environment} ${module.pod_security_group.security_group_id} ${aws_iam_role.eks-tasks.arn} ${aws_iam_role.eks-alb-controller.arn} ${var.certificate_arn}"
+    command = "bash ../bin/populate_pod_values.sh ${var.environment} ${module.pod_security_group.security_group_id} ${aws_iam_role.eks-tasks.arn} ${aws_iam_role.eks-alb-controller.arn} ${var.certificate_arn} ${jsonencode(local.public_subnet_ids)} ${aws_iam_role.eks-autoscaler[0].arn}"
   }
 }

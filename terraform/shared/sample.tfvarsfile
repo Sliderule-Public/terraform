@@ -1,0 +1,7 @@
+# This file is a sample terraform vars file, to be copied to a *.tfvars file for use with this stack.
+# It only includes required variables. Refer to ./variables.tf for optional variables.
+
+region= ""
+company_name= ""
+external_aws_account_id= ""
+external_id= ""
