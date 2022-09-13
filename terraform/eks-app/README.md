@@ -80,7 +80,7 @@
 | <a name="input_database_instance_type"></a> [database\_instance\_type](#input\_database\_instance\_type) | n/a | `string` | `"db.t3.xlarge"` | no |
 | <a name="input_database_security_group_additional_rules"></a> [database\_security\_group\_additional\_rules](#input\_database\_security\_group\_additional\_rules) | optional additional security group rules for the database security group. | <pre>list(object({<br>    description = string<br>    from_port   = number<br>    to_port     = number<br>    protocol    = string<br>    cidr_block  = string<br>  }))</pre> | `[]` | no |
 | <a name="input_deploy_eks"></a> [deploy\_eks](#input\_deploy\_eks) | if true, a new EKS cluster is created | `bool` | `true` | no |
-| <a name="input_deploy_read_replica"></a> [deploy\_read\_replica](#input\_deploy\_read\_replica) | Whether to add a read replica | `bool` | `false` | no |
+| <a name="input_deploy_read_replica"></a> [deploy\_read\_replica](#input\_deploy\_read\_replica) | if true, deploys an optional read replica for the RDS instance | `bool` | `false` | no |
 | <a name="input_docs_eks_port"></a> [docs\_eks\_port](#input\_docs\_eks\_port) | used in helm to expose the docs service through security group rules | `number` | `31256` | no |
 | <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | Name of EKS cluster to be used to create OIDC providers for IAM roles. Only required if deploy\_eks is false | `string` | `""` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | used in resource naming and namespacing | `string` | n/a | yes |
@@ -97,6 +97,7 @@
 | <a name="input_skip_final_snapshot"></a> [skip\_final\_snapshot](#input\_skip\_final\_snapshot) | if true, will skip the final snapshot if the RDS instance is deleted | `bool` | `false` | no |
 | <a name="input_snapshot_identifier"></a> [snapshot\_identifier](#input\_snapshot\_identifier) | optional snapshot to use to create RDS instance | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | optional AWS tags to apply to most resources deployed with this stack | `any` | `{}` | no |
+| <a name="input_use_only_private_subnets"></a> [use\_only\_private\_subnets](#input\_use\_only\_private\_subnets) | If true, will use only private subnets to provision all network-dependant resources | `bool` | `false` | no |
 | <a name="input_use_variable_scripts"></a> [use\_variable\_scripts](#input\_use\_variable\_scripts) | if true, null\_resource resources will be used to run scripts that generate var files for kubernetes/aws/shieldrule | `bool` | `false` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | only needed if create\_vpc is false. VPC to use to host resources in this stack | `string` | `""` | no |
 | <a name="input_web_eks_port"></a> [web\_eks\_port](#input\_web\_eks\_port) | used in helm to expose the web service through security group rules | `number` | `31255` | no |
