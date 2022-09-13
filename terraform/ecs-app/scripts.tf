@@ -47,7 +47,7 @@ resource "null_resource" "populate_generic_values" {
 }
 
 resource "null_resource" "prepare_kubernetes_yaml_file" {
-  count = var.use_variable_scripts == true ? 1 : 0
+  count = var.use_variable_scripts == true && var.deploy_eks == true ? 1 : 0
   depends_on = [aws_eks_cluster.main, null_resource.populate_generic_values]
   provisioner "local-exec" {
     command = "bash ../bin/prepare_kubernetes_yaml_file.sh ${var.environment}"
@@ -55,17 +55,17 @@ resource "null_resource" "prepare_kubernetes_yaml_file" {
 }
 
 resource "null_resource" "populate_pod_values" {
-  count = var.use_variable_scripts == true ? 1 : 0
+  count = var.use_variable_scripts == true && var.deploy_eks == true ? 1 : 0
   depends_on = [aws_eks_cluster.main, null_resource.prepare_kubernetes_yaml_file]
   provisioner "local-exec" {
-    command = "bash ../bin/populate_pod_values.sh ${var.environment} ${module.pod_security_group.security_group_id} ${aws_iam_role.eks-tasks[0].arn} ${aws_iam_role.eks-alb-controller[0].arn} ${var.certificate_arn}"
+    command = "bash ../bin/populate_pod_values.sh ${var.environment} ${module.pod_security_group.security_group_id} ${aws_iam_role.eks-tasks[0].arn} ${aws_iam_role.eks-alb-controller[0].arn} ${var.certificate_arn} ${jsonencode(module.shared_vpc.public_subnet_ids)} ${aws_iam_role.eks-autoscaler[0].arn}"
   }
 }
 
-resource "null_resource" "create_auth0_user" {
-  count      = var.use_variable_scripts == true ? 1 : 0
-  depends_on = [module.rds_instance, module.shared_bastion_auto_scaling_group]
+resource "null_resource" "populate_prerequisite_values" {
+  count = var.use_variable_scripts == true && var.deploy_eks == true ? 1 : 0
+  depends_on = [aws_eks_cluster.main, null_resource.prepare_kubernetes_yaml_file]
   provisioner "local-exec" {
-    command = "bash ../bin/create_auth0_user.sh ${var.environment} ${module.rds_instance.address} ${var.master_db_username} ${var.master_db_password} ${var.initial_database} ${module.rds_instance.port} ${var.company_name} ${var.auth0_password}"
+    command = "bash ../bin/populate_prerequisite_values.sh ${var.environment} ${aws_iam_role.eks-alb-controller[0].arn} ${aws_iam_role.eks-autoscaler[0].arn}"
   }
 }

@@ -26,11 +26,12 @@ resource "aws_lb_target_group" "tg" {
 }
 
 resource "aws_ecs_service" "service" {
-  name            = "${var.company_name}-${var.environment}-${var.service_name}"
-  tags            = var.tags
-  cluster         = var.cluster_id
-  task_definition = var.task_definition_arn
-  desired_count   = var.desired_count
+  name                               = "${var.company_name}-${var.environment}-${var.service_name}"
+  tags                               = var.tags
+  cluster                            = var.cluster_id
+  task_definition                    = var.task_definition_arn
+  desired_count                      = var.desired_count
+  deployment_minimum_healthy_percent = 50
   network_configuration {
     subnets         = var.subnets
     security_groups = var.vpc_security_group_ids
@@ -49,6 +50,8 @@ resource "aws_ecs_service" "service" {
     container_name   = var.container_to_forward_to
     container_port   = var.container_port
   }
+
+  health_check_grace_period_seconds = 60
 }
 
 resource "aws_lb_listener_rule" "static" {

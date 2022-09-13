@@ -1,17 +1,17 @@
 variable "company_name" {
-  type = string
+  type        = string
+  description = "used in resource naming"
 }
 variable "app_name" {
   type = string
 }
 variable "environment" {
-  type = string
+  type        = string
+  description = "used in resource naming and namespacing"
 }
 variable "region" {
-  type = string
-}
-variable "author" {
-  type = string
+  type        = string
+  description = "aws region to deploy into"
 }
 variable "tags" {
   type = object({
@@ -24,7 +24,8 @@ variable "kms_grantees" {
   type = list(string)
 }
 variable "app_vpc_cidr" {
-  type = string
+  type        = string
+  description = "desired value for the VPC CIDR if create_vpc is true. If create_vpc is false, then the CIDR of the VPC being used in vpc_id."
 }
 variable "snapshot_identifier" {
   type    = string
@@ -131,6 +132,10 @@ variable "services_to_grant_kms_access_to" {
   type    = list(string)
   default = []
 }
+variable "iam_arns_to_grant_sns_kms_access_to" {
+  type    = list(string)
+  default = []
+}
 variable "api_task_memory" {
   type    = number
   default = 31000
@@ -146,19 +151,6 @@ variable "deploy_route53_resources" {
 variable "elb_idle_timeout" {
   type    = number
   default = 60
-}
-// Password for the auth0 user in the postgresql database
-variable "auth0_password" {
-  type = string
-}
-variable "auth0_domain" {
-  type = string
-}
-variable "auth0_client_id" {
-  type = string
-}
-variable "auth0_secret" {
-  type = string
 }
 variable "host_instance_type" {
   type    = string
@@ -228,15 +220,25 @@ variable "upload_env_file" {
 variable "web_eks_port" {
   type        = number
   default     = 31255
-  description = "optional. used in helm to expose the web service through security group rules"
+  description = "optional. used in helm to expose the web service through security group rules. Only required here if use_variable_scripts is true"
 }
 variable "docs_eks_port" {
   type        = number
   default     = 31256
-  description = "optional. used in helm to expose the docs service through security group rules"
+  description = "optional. used in helm to expose the docs service through security group rules. Only required here if use_variable_scripts is true"
 }
 variable "api_eks_port" {
   type        = number
   default     = 31257
-  description = "optional. used in helm to expose the API service through security group rules"
+  description = "optional. used in helm to expose the API service through security group rules. Only required here if use_variable_scripts is true"
+}
+variable "deploy_read_replica" {
+  type = bool
+  default = false
+  description = "Whether to add a read replica"
+}
+variable "use_only_private_subnets" {
+  type    = bool
+  default = false
+  description = "If true, will use only private subnets to provision all network-dependant resources"
 }

@@ -27,13 +27,13 @@ You should never have to interact with this directory or any subdirectories insi
 
 ### Deploying the shared stack
 - Configure an AWS profile or credentials
-- Copy `shared/sample.tfvars` to `shared/default.tfvars`
+- Copy `shared/sample.tfvarsfile` to `shared/default.tfvars`
 - Fill out variables in `shared/default.tfvars`
 - `cd shared`
 - `terraform apply --var-file=default.tfvars`
 
 ### Creating an AWS ACM certificate
-This is done manually in order to allow you to use any DNS provider and verification method your team supports to create a certificate.
+This is done manually in order to allow you to use any DNS provider and verification method your team supports to create a certificate. This is only required if you plan to deploy this stack's optional load balancer. 
 
 - Visit the AWS ACM dashboard and make a single certificate for the values `yourdomain.com` and `*.yourdomain.com`
 - Validate the certificate any way you need

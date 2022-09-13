@@ -57,10 +57,10 @@ data "aws_iam_policy_document" "eks_task" {
 }
 
 data "tls_certificate" "main" {
-  url = aws_eks_cluster.main[0].identity[0].oidc[0].issuer
+  url = local.eks_oidc_issuer
 }
 resource "aws_iam_openid_connect_provider" "main" {
-  url = aws_eks_cluster.main[0].identity[0].oidc[0].issuer
+  url = local.eks_oidc_issuer
 
   client_id_list = [
     "sts.amazonaws.com",
