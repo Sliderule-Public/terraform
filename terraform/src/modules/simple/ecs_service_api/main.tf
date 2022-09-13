@@ -46,11 +46,12 @@ resource "aws_lb_target_group" "grpc" {
 }
 
 resource "aws_ecs_service" "service" {
-  name            = "${var.company_name}-${var.environment}-${var.service_name}"
-  tags            = var.tags
-  cluster         = var.cluster_id
-  task_definition = var.task_definition_arn
-  desired_count   = var.desired_count
+  name                               = "${var.company_name}-${var.environment}-${var.service_name}"
+  tags                               = var.tags
+  cluster                            = var.cluster_id
+  task_definition                    = var.task_definition_arn
+  desired_count                      = var.desired_count
+  deployment_minimum_healthy_percent = 50
 
   dynamic "capacity_provider_strategy" {
     for_each = length(var.capacity_provider_name) > 0 ? [1] : []
@@ -71,6 +72,8 @@ resource "aws_ecs_service" "service" {
     container_name   = var.container_to_forward_to
     container_port   = 9520
   }
+
+  health_check_grace_period_seconds = 60
 
 }
 
@@ -207,7 +210,7 @@ resource "aws_cloudwatch_metric_alarm" "service-cpu" {
   evaluation_periods  = "1"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/ECS"
-  period              = "300"
+  period              = "600"
   statistic           = "Average"
   threshold           = "80"
 

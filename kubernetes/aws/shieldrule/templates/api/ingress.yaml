@@ -11,6 +11,7 @@ metadata:
     alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-Ext-2018-06
     alb.ingress.kubernetes.io/group.name: shieldrule
     alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    alb.ingress.kubernetes.io/subnets: {{ .Values.public_subnet_ids }}
 spec:
   ingressClassName: alb
   rules:

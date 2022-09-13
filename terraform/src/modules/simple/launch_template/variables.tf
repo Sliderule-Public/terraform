@@ -20,13 +20,15 @@ variable "ami" {
   type = string
 }
 variable "instance_profile_name" {
-  type = string
+  type    = string
+  default = ""
 }
 variable "vpc_security_group_ids" {
-  type = list(string)
+  type    = list(string)
+  default = []
 }
 variable "user_data" {
-  type = string
+  type    = string
   default = ""
 }
 variable "tags" {
@@ -37,6 +39,6 @@ variable "tags" {
   })
 }
 variable "associate_public_ip_address" {
-  type = bool
+  type    = bool
   default = true
 }

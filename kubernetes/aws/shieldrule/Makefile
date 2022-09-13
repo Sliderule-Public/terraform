@@ -1,6 +1,6 @@
 .ONESHELL:
 
-install_all: add_prerequisites add_alb_controller
+install_all: add_prerequisites
 	@helm install shieldrule --create-namespace -n $(env) -f values-$(env).yaml -f values-terraform-$(env).yaml .
 
 install:
@@ -18,24 +18,15 @@ set_namespace:
 
 add_prerequisites:
 	cd ../prerequisites
-	@helm template -s templates/alb_service_account.yaml --create-namespace -n $(env) -f ../shieldrule/values-$(env).yaml -f ../shieldrule/values-terraform-$(env).yaml . | kubectl apply -f -
+	@helm -n kube-system install shieldrule-prerequisites -f values-prerequisites-$(env).yaml .
 	cd ../shieldrule
 
 delete_prerequisites:
 	cd ../prerequisites
-	@helm template -s templates/alb_service_account.yaml --create-namespace -n $(env) -f ../shieldrule/values-$(env).yaml -f ../shieldrule/values-terraform-$(env).yaml . | kubectl delete -f -
+	@helm -n kube-system uninstall shieldrule-prerequisites
 	cd ../shieldrule
 
-add_alb_controller:
-	@helm repo add eks https://aws.github.io/eks-charts
-	@helm repo update
-	@helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
-	  -n kube-system \
-	  --set clusterName=$(env)-eks \
-	  --set serviceAccount.create=false \
-	  --set serviceAccount.name=aws-load-balancer-controller
-	  --set image.repository=602401143452.dkr.ecr.$(region).amazonaws.com/amazon/aws-load-balancer-controller
-
+# TODO keeping this here for other environments to easily wipe the old alb controller
 delete_alb_controller:
 	@helm -n kube-system delete aws-load-balancer-controller
 

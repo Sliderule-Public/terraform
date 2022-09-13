@@ -41,7 +41,7 @@ terraform {
 
     grafana = {
       source  = "grafana/grafana"
-      version = "~> 1.12.0"
+      version = "~> 1.15.0"
     }
 
     auth0 = {

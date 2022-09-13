@@ -92,3 +92,23 @@ USE_INSTANCE_PROFILE: true
 USE_REDIS: true
 USE_SQS: true
 ENVIRONMENT: production
+
+# default resources for the frontend service
+web:
+  resources:
+    requests:
+      memory: "1024Mi"
+      cpu: "512m"
+    limits:
+      memory: "1024Mi"
+      cpu: "512m"
+
+# default resources for the API service
+api:
+  resources:
+    requests:
+      memory: "14500Mi"
+      cpu: "3400m"
+    limits:
+      memory: "14500Mi"
+      cpu: "3400m"

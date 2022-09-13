@@ -27,6 +27,10 @@ resource "aws_launch_template" "template" {
     name = var.instance_profile_name
   }
 
+  lifecycle {
+    ignore_changes = [iam_instance_profile]
+  }
+
   tag_specifications {
     resource_type = "instance"
 

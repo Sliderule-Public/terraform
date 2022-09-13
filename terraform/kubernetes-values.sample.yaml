@@ -3,3 +3,5 @@ service_account_role:
 alb_controller_service_account_role:
 alb_cert_arn:
 enable_aws_alb: true
+public_subnet_ids:
+autoscaler_service_account_role:
