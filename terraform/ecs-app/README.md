@@ -159,14 +159,14 @@ No outputs.
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.9 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.27 |
-| <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | ~> 1.12.0 |
+| <a name="requirement_grafana"></a> [grafana](#requirement\_grafana) | ~> 1.15.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 3.75.2 |
-| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | 1.12.0 |
+| <a name="provider_grafana"></a> [grafana](#provider\_grafana) | 1.15.0 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.1.1 |
 | <a name="provider_tls"></a> [tls](#provider\_tls) | 4.0.2 |
 
@@ -246,7 +246,6 @@ No outputs.
 | [grafana_dashboard.sqs](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/dashboard) | resource |
 | [grafana_data_source.cloudwatch](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) | resource |
 | [null_resource.copy_env_file](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [null_resource.create_auth0_user](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.populate_db_values](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.populate_generic_values](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.populate_pod_values](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
@@ -271,7 +270,7 @@ No outputs.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_api_eks_port"></a> [api\_eks\_port](#input\_api\_eks\_port) | optional. used in helm to expose the API service through security group rules | `number` | `31257` | no |
+| <a name="input_api_eks_port"></a> [api\_eks\_port](#input\_api\_eks\_port) | optional. used in helm to expose the API service through security group rules. Only required here if use\_variable\_scripts is true | `number` | `31257` | no |
 | <a name="input_api_health_check_interval"></a> [api\_health\_check\_interval](#input\_api\_health\_check\_interval) | n/a | `number` | `60` | no |
 | <a name="input_api_health_check_timeout"></a> [api\_health\_check\_timeout](#input\_api\_health\_check\_timeout) | n/a | `number` | `10` | no |
 | <a name="input_api_healthy_threshold"></a> [api\_healthy\_threshold](#input\_api\_healthy\_threshold) | n/a | `number` | `2` | no |
@@ -280,18 +279,13 @@ No outputs.
 | <a name="input_api_task_vcpu"></a> [api\_task\_vcpu](#input\_api\_task\_vcpu) | n/a | `number` | `7800` | no |
 | <a name="input_api_unhealthy_threshold"></a> [api\_unhealthy\_threshold](#input\_api\_unhealthy\_threshold) | n/a | `number` | `2` | no |
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | n/a | `string` | n/a | yes |
-| <a name="input_app_vpc_cidr"></a> [app\_vpc\_cidr](#input\_app\_vpc\_cidr) | n/a | `string` | n/a | yes |
-| <a name="input_auth0_client_id"></a> [auth0\_client\_id](#input\_auth0\_client\_id) | n/a | `string` | n/a | yes |
-| <a name="input_auth0_domain"></a> [auth0\_domain](#input\_auth0\_domain) | n/a | `string` | n/a | yes |
-| <a name="input_auth0_password"></a> [auth0\_password](#input\_auth0\_password) | Password for the auth0 user in the postgresql database | `string` | n/a | yes |
-| <a name="input_auth0_secret"></a> [auth0\_secret](#input\_auth0\_secret) | n/a | `string` | n/a | yes |
-| <a name="input_author"></a> [author](#input\_author) | n/a | `string` | n/a | yes |
+| <a name="input_app_vpc_cidr"></a> [app\_vpc\_cidr](#input\_app\_vpc\_cidr) | desired value for the VPC CIDR if create\_vpc is true. If create\_vpc is false, then the CIDR of the VPC being used in vpc\_id. | `string` | n/a | yes |
 | <a name="input_aws_access_key"></a> [aws\_access\_key](#input\_aws\_access\_key) | n/a | `string` | n/a | yes |
 | <a name="input_aws_secret_key"></a> [aws\_secret\_key](#input\_aws\_secret\_key) | n/a | `string` | n/a | yes |
 | <a name="input_bastion_ami"></a> [bastion\_ami](#input\_bastion\_ami) | n/a | `string` | `""` | no |
 | <a name="input_bastion_instance_type"></a> [bastion\_instance\_type](#input\_bastion\_instance\_type) | n/a | `string` | `"t3.small"` | no |
 | <a name="input_certificate_arn"></a> [certificate\_arn](#input\_certificate\_arn) | n/a | `string` | n/a | yes |
-| <a name="input_company_name"></a> [company\_name](#input\_company\_name) | n/a | `string` | n/a | yes |
+| <a name="input_company_name"></a> [company\_name](#input\_company\_name) | used in resource naming | `string` | n/a | yes |
 | <a name="input_database_instance_type"></a> [database\_instance\_type](#input\_database\_instance\_type) | n/a | `string` | `"db.t3.xlarge"` | no |
 | <a name="input_database_security_group_additional_rules"></a> [database\_security\_group\_additional\_rules](#input\_database\_security\_group\_additional\_rules) | n/a | <pre>list(object({<br>    description = string<br>    from_port   = number<br>    to_port     = number<br>    protocol    = string<br>    cidr_block  = string<br>  }))</pre> | `[]` | no |
 | <a name="input_deploy_ecs"></a> [deploy\_ecs](#input\_deploy\_ecs) | if true, a new ECS cluster and surrounding resources are created | `bool` | `true` | no |
@@ -301,13 +295,13 @@ No outputs.
 | <a name="input_deploy_route53_resources"></a> [deploy\_route53\_resources](#input\_deploy\_route53\_resources) | n/a | `bool` | `true` | no |
 | <a name="input_desired_task_count_api"></a> [desired\_task\_count\_api](#input\_desired\_task\_count\_api) | n/a | `number` | `3` | no |
 | <a name="input_desired_task_count_web"></a> [desired\_task\_count\_web](#input\_desired\_task\_count\_web) | n/a | `number` | `2` | no |
-| <a name="input_docs_eks_port"></a> [docs\_eks\_port](#input\_docs\_eks\_port) | optional. used in helm to expose the docs service through security group rules | `number` | `31256` | no |
+| <a name="input_docs_eks_port"></a> [docs\_eks\_port](#input\_docs\_eks\_port) | optional. used in helm to expose the docs service through security group rules. Only required here if use\_variable\_scripts is true | `number` | `31256` | no |
 | <a name="input_domains_to_redirect"></a> [domains\_to\_redirect](#input\_domains\_to\_redirect) | n/a | <pre>list(object({<br>    from = string<br>    to   = string<br>  }))</pre> | `[]` | no |
 | <a name="input_ecs_alarms_email_recipients"></a> [ecs\_alarms\_email\_recipients](#input\_ecs\_alarms\_email\_recipients) | n/a | `list(string)` | `[]` | no |
 | <a name="input_ecs_domain_names"></a> [ecs\_domain\_names](#input\_ecs\_domain\_names) | Domain names, which when combined with var.web\_subdomains and var.api\_subdomains, create the domains that your ECS services will listen on. If var.deploy\_route53\_resources is set to true, subdomains will also be created in the Route 53 hosted zones for these domain names. | `list(string)` | n/a | yes |
 | <a name="input_ecs_host_ami"></a> [ecs\_host\_ami](#input\_ecs\_host\_ami) | n/a | `string` | `""` | no |
 | <a name="input_elb_idle_timeout"></a> [elb\_idle\_timeout](#input\_elb\_idle\_timeout) | n/a | `number` | `60` | no |
-| <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | used in resource naming and namespacing | `string` | n/a | yes |
 | <a name="input_extra_domain_names"></a> [extra\_domain\_names](#input\_extra\_domain\_names) | If var.deploy\_route53\_resources is set to true, subdomains will be created in the Route 53 hosted zones for these optional extra domain names. This is only offered to create extra Route 53 entries and can be left empty at any time. | `list(string)` | `[]` | no |
 | <a name="input_grafana_auth"></a> [grafana\_auth](#input\_grafana\_auth) | n/a | `string` | `""` | no |
 | <a name="input_grafana_email_recipients"></a> [grafana\_email\_recipients](#input\_grafana\_email\_recipients) | n/a | `string` | `""` | no |
@@ -320,15 +314,16 @@ No outputs.
 | <a name="input_maximum_host_count"></a> [maximum\_host\_count](#input\_maximum\_host\_count) | n/a | `number` | `10` | no |
 | <a name="input_minimum_host_count"></a> [minimum\_host\_count](#input\_minimum\_host\_count) | n/a | `number` | `1` | no |
 | <a name="input_redis_node_type"></a> [redis\_node\_type](#input\_redis\_node\_type) | n/a | `string` | `"cache.m4.xlarge"` | no |
-| <a name="input_region"></a> [region](#input\_region) | n/a | `string` | n/a | yes |
+| <a name="input_region"></a> [region](#input\_region) | aws region to deploy into | `string` | n/a | yes |
 | <a name="input_server_iam_role_policy_statements"></a> [server\_iam\_role\_policy\_statements](#input\_server\_iam\_role\_policy\_statements) | n/a | <pre>list(object({<br>    effect    = string<br>    actions   = list(string)<br>    resources = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_services_to_grant_kms_access_to"></a> [services\_to\_grant\_kms\_access\_to](#input\_services\_to\_grant\_kms\_access\_to) | n/a | `list(string)` | `[]` | no |
 | <a name="input_skip_final_snapshot"></a> [skip\_final\_snapshot](#input\_skip\_final\_snapshot) | n/a | `bool` | `false` | no |
 | <a name="input_snapshot_identifier"></a> [snapshot\_identifier](#input\_snapshot\_identifier) | n/a | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | <pre>object({<br>    Environment       = string<br>    Company           = string<br>    Deployment_Method = string<br>  })</pre> | n/a | yes |
 | <a name="input_upload_env_file"></a> [upload\_env\_file](#input\_upload\_env\_file) | if true, an env file is uploaded automatically to S3 for use with ECS API containers | `bool` | `false` | no |
+| <a name="input_use_only_private_subnets"></a> [use\_only\_private\_subnets](#input\_use\_only\_private\_subnets) | If true, will use only private subnets to provision all network-dependant resources | `bool` | `false` | no |
 | <a name="input_use_variable_scripts"></a> [use\_variable\_scripts](#input\_use\_variable\_scripts) | if true, null\_resource resources will be used to run scripts that generate var files for kubernetes/aws/shieldrule | `bool` | `false` | no |
-| <a name="input_web_eks_port"></a> [web\_eks\_port](#input\_web\_eks\_port) | optional. used in helm to expose the web service through security group rules | `number` | `31255` | no |
+| <a name="input_web_eks_port"></a> [web\_eks\_port](#input\_web\_eks\_port) | optional. used in helm to expose the web service through security group rules. Only required here if use\_variable\_scripts is true | `number` | `31255` | no |
 | <a name="input_web_subdomains"></a> [web\_subdomains](#input\_web\_subdomains) | n/a | `list(string)` | n/a | yes |
 
 ## Outputs
