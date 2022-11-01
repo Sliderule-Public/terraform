@@ -12,6 +12,8 @@ metadata:
     alb.ingress.kubernetes.io/group.name: shieldrule
     alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
     alb.ingress.kubernetes.io/subnets: {{ .Values.public_subnet_ids }}
+    alb.ingress.kubernetes.io/actions.redirect-to-sliderule: >
+      {"type":"redirect","redirectConfig":{"host":"api-{{ .Values.SHIELDRULE_ENVIRONMENT }}.sliderule.io","path":"/#{path}","port":"443","protocol":"HTTPS","query":"#{query}","statusCode":"HTTP_302"}}
 spec:
   ingressClassName: alb
   rules:
@@ -25,6 +27,51 @@ spec:
                 name: shieldrule-api-service
                 port:
                   number: 8000
+    {{ if .Values.redirect_backend_services }}
+    - host: api-{{ .Values.SHIELDRULE_ENVIRONMENT }}.usemodernlogic.com
+      http:
+        paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: redirect-to-sliderule
+                  port:
+                    name: use-annotation
+    {{ else }}
+    - host: api-{{ .Values.SHIELDRULE_ENVIRONMENT }}.usemodernlogic.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shieldrule-api-service
+                port:
+                  number: 8000
+    {{ end }}
+    {{- range .Values.environment_aliases }}
+    - host: api-{{ . }}.sliderule.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shieldrule-api-service
+                port:
+                  number: 8000
+    - host: api-{{ . }}.usemodernlogic.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shieldrule-api-service
+                port:
+                  number: 8000
+    {{- end }}
     - host: api-{{ .Values.SHIELDRULE_ENVIRONMENT }}-eks.sliderule.io
       http:
         paths:

@@ -2,7 +2,7 @@ module "rds_role" {
   environment  = var.environment
   company_name = var.company_name
   tags         = var.tags
-  source       = "../src/modules/simple/iam_role"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/iam_role"
   role_name    = "rds"
   service      = "rds.amazonaws.com"
   policy       = <<-EOF
@@ -27,7 +27,7 @@ module "ecs_host_role" {
   environment  = var.environment
   company_name = var.company_name
   tags         = var.tags
-  source       = "../src/modules/simple/iam_role"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/iam_role"
   role_name    = "ecs_host"
   service      = "ec2.amazonaws.com"
   policy       = <<-EOF
@@ -73,7 +73,7 @@ module "bastion_role" {
   environment  = var.environment
   company_name = var.company_name
   tags         = var.tags
-  source       = "../src/modules/simple/iam_role"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/iam_role"
   role_name    = "bastion"
   service      = "ec2.amazonaws.com"
   policy       = <<-EOF
@@ -105,21 +105,21 @@ module "ecs_task_role" {
   environment  = var.environment
   company_name = var.company_name
   tags         = var.tags
-  source       = "../src/modules/simple/iam_role"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/iam_role"
   role_name    = "ecs-tasks"
   service      = "ecs-tasks.amazonaws.com"
   policy       = data.aws_iam_policy_document.task.json
 }
 
 module "ecs_host_ssm_policy_attachment" {
-  source     = "../src/modules/simple/iam_role_policy_attachment"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/iam_role_policy_attachment"
   role_arn   = module.ecs_host_role.role_name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   tags       = var.tags
 }
 
 module "bastion_host_ssm_policy_attachment" {
-  source     = "../src/modules/simple/iam_role_policy_attachment"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/iam_role_policy_attachment"
   role_arn   = module.bastion_role.role_name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   tags       = var.tags
@@ -129,7 +129,7 @@ module "ecs_task_execution_role" {
   environment  = var.environment
   company_name = var.company_name
   tags         = var.tags
-  source       = "../src/modules/simple/iam_role"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/iam_role"
   role_name    = "task-execution"
   service      = "ecs-tasks.amazonaws.com"
   policy       = <<-EOF
@@ -177,7 +177,7 @@ module "prometheus_role" {
   environment  = var.environment
   company_name = var.company_name
   tags         = var.tags
-  source       = "../src/modules/simple/iam_role"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/iam_role"
   role_name    = "prometheus"
   service      = "ec2.amazonaws.com"
   policy       = <<-EOF
@@ -212,7 +212,7 @@ module "ecs_shared_instance_profile" {
   environment  = var.environment
   company_name = var.company_name
   tags         = var.tags
-  source       = "../src/modules/simple/instance_profile"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/instance_profile"
   profile_name = "ecs-host"
   role_name    = module.ecs_host_role.role_name
 }
@@ -221,7 +221,7 @@ module "bastion_instance_profile" {
   environment  = var.environment
   company_name = var.company_name
   tags         = var.tags
-  source       = "../src/modules/simple/instance_profile"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/instance_profile"
   profile_name = "bastion"
   role_name    = module.bastion_role.role_name
 }
@@ -321,6 +321,11 @@ resource "aws_iam_role" "eks" {
     "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
     "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
   ]
+
+  inline_policy {
+    name   = "eks-${var.environment}"
+    policy = data.aws_iam_policy_document.eks_task[0].json
+  }
 
   assume_role_policy = <<POLICY
 {

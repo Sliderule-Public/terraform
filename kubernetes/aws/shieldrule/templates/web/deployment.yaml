@@ -18,12 +18,39 @@ spec:
       {{ if .Values.service_account_role }}
       serviceAccountName: aws-role
       {{ end }}
-      containers:
-        - image: "600592424179.dkr.ecr.us-west-1.amazonaws.com/shieldrule-web:{{ .Values.SHIELDRULE_ENVIRONMENT }}"
+      securityContext:
+        runAsUser: 101
+        runAsGroup: 101
+        fsGroup: 101
+      initContainers:
+        - name: volume-mount-hack
           imagePullPolicy: Always
+          image: "{{ .Values.web_image_url }}:{{ .Values.SHIELDRULE_ENVIRONMENT }}"
+          command: [ "sh", "-c", "cp -r /usr/share/nginx/html/* /usr/share/nginx/html_rw/ && cp ./nginx.eks.conf /etc/nginx/conf.d/default.conf" ]
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html_rw
+              name: shieldrule-web-nginx-html
+            - mountPath: /etc/nginx/conf.d/
+              name: shieldrule-web-nginx-config
+      containers:
+        - image: "{{ .Values.web_image_url }}:{{ .Values.SHIELDRULE_ENVIRONMENT }}"
+          imagePullPolicy: Always
+          command: ["/bin/sh", "-c", "./load-env.sh /usr/share/nginx/html_rw/config.js && nginx -g \"daemon off;\""]
           name: shieldrule-web
           ports:
             - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            timeoutSeconds: 10
+            initialDelaySeconds: 90
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            timeoutSeconds: 10
+            initialDelaySeconds: 90
           resources:
             requests:
               memory: {{ .Values.web.resources.requests.memory }}
@@ -37,13 +64,11 @@ spec:
                 - all
           volumeMounts:
             - mountPath: /var/cache/nginx
-              name: shieldrule-web-tmpfs0
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 8000
-            initialDelaySeconds: 10
-            periodSeconds: 3
+              name: shieldrule-web-nginx-cache
+            - mountPath: /usr/share/nginx/html_rw
+              name: shieldrule-web-nginx-html
+            - mountPath: /etc/nginx/conf.d/
+              name: shieldrule-web-nginx-config
           envFrom:
             - secretRef:
                 name: api-secret
@@ -92,7 +117,10 @@ spec:
               value: {{ .Values.SQS_URL | quote }}
       restartPolicy: Always
       volumes:
-        - emptyDir:
-            medium: Memory
-          name: shieldrule-web-tmpfs0
+        - emptyDir: {}
+          name: shieldrule-web-nginx-cache
+        - emptyDir: { }
+          name: shieldrule-web-nginx-config
+        - emptyDir: {}
+          name: shieldrule-web-nginx-html
 status: {}

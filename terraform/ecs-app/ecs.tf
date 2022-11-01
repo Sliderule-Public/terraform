@@ -5,7 +5,7 @@ locals {
 }
 
 module "services_ecs_cluster" {
-  source                = "../src/modules/simple/ecs_cluster"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/ecs_cluster"
   environment           = var.environment
   company_name          = var.company_name
   cluster_name          = "services"
@@ -14,7 +14,8 @@ module "services_ecs_cluster" {
 }
 
 module "web_ecs_service" {
-  source                  = "../src/modules/simple/ecs_service"
+  count = var.deploy_ecs == true ? 1 : 0
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/ecs_service"
   environment             = var.environment
   company_name            = var.company_name
   service_name            = "${var.app_name}-web"
@@ -39,7 +40,8 @@ module "web_ecs_service" {
 }
 
 module "api_ecs_service" {
-  source                    = "../src/modules/simple/ecs_service_api"
+  count = var.deploy_ecs == true ? 1 : 0
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/ecs_service_api"
   environment               = var.environment
   company_name              = var.company_name
   service_name              = "${var.app_name}-api"
@@ -70,7 +72,8 @@ module "api_ecs_service" {
 }
 
 module "jobs_ecs_service" {
-  source                  = "../src/modules/simple/ecs_service_no_route"
+  count = var.deploy_ecs == true ? 1 : 0
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/ecs_service_no_route"
   environment             = var.environment
   company_name            = var.company_name
   service_name            = "${var.app_name}-jobs"
@@ -91,7 +94,7 @@ module "jobs_ecs_service" {
 }
 
 resource "aws_lb_listener_rule" "redirects" {
-  count        = length(var.domains_to_redirect)
+  count = var.deploy_ecs == true ? length(var.domains_to_redirect) : 0
   listener_arn = module.shared_ecs_load_balancer.listener_arn
   priority     = count.index + 10
   tags         = var.tags

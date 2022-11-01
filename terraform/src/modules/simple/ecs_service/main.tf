@@ -11,7 +11,7 @@ resource "aws_lb_target_group" "tg" {
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
   target_type          = var.target_type
-  deregistration_delay = 10
+  deregistration_delay = 300
   health_check {
     enabled             = var.enable_health_check
     matcher             = "200-304,401"

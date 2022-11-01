@@ -1,0 +1,54 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sliderule-psp-role
+rules:
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs:     ['use']
+    resourceNames:
+      - sliderule-psp
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sliderule-psp-binding
+roleRef:
+  kind: ClusterRole
+  name: sliderule-psp-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: Group
+    apiGroup: rbac.authorization.k8s.io
+    name: system:serviceaccounts:{{ .Values.SHIELDRULE_ENVIRONMENT }}
+
+---
+
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: sliderule-psp
+spec:
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  privileged: false
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      # Forbid adding the root group.
+      - min: 1
+        max: 65535
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  volumes:
+    - '*'

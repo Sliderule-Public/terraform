@@ -1,7 +1,7 @@
 resource "aws_eks_cluster" "main" {
   count    = var.deploy_eks == true ? 1 : 0
   name     = "${var.environment}-eks"
-  version  = ""
+  version  = "1.23"
   role_arn = aws_iam_role.eks[0].arn
 
   vpc_config {

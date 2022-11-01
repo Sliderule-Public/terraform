@@ -51,13 +51,5 @@ terraform {
 
   required_version = ">= 0.14.9"
 
-  //
-  // Optional S3 backend
-  //
-  //  backend "s3" {
-  //    bucket  = "STATE_BUCKET"
-  //    key     = "STATE_PATH/terraform.tfstate"
-  //    region  = "REGION"
-  //  }
-
+  backend "s3" {}
 }

@@ -11,7 +11,6 @@ upgrade:
 
 use_aws_cluster:
 	@aws eks update-kubeconfig --region $(region) --name $(cluster)
-	@kubectl set env daemonset aws-node -n kube-system ENABLE_POD_ENI=true
 
 set_namespace:
 	@kubectl config set-context --current --namespace=$(env)
@@ -34,7 +33,7 @@ rollout:
 	@kubectl -n $(env) rollout restart deployment/shieldrule-$(service)
 	@kubectl -n $(env) rollout status -w deployment/shieldrule-$(service)
 
-uninstall: delete_prerequisites delete_alb_controller
+uninstall: delete_prerequisites
 	@helm uninstall shieldrule -n $(env)
 
 patch_ingress:

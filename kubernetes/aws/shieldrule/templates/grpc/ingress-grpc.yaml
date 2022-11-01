@@ -14,6 +14,8 @@ metadata:
     alb.ingress.kubernetes.io/success-codes: 0-99
     alb.ingress.kubernetes.io/backend-protocol-version: GRPC
     alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/actions.redirect-to-sliderule: >
+      {"type":"redirect","redirectConfig":{"host":"grpc-{{ .Values.SHIELDRULE_ENVIRONMENT }}.sliderule.io","path":"/#{path}","port":"443","protocol":"HTTPS","query":"#{query}","statusCode":"HTTP_302"}}
 spec:
   ingressClassName: alb
   rules:
@@ -27,6 +29,51 @@ spec:
                   name: shieldrule-api-service
                   port:
                     number: 9520
+    {{ if .Values.redirect_backend_services }}
+    - host: grpc-{{ .Values.SHIELDRULE_ENVIRONMENT }}.usemodernlogic.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: redirect-to-sliderule
+                port:
+                  name: use-annotation
+    {{ else }}
+    - host: grpc-{{ .Values.SHIELDRULE_ENVIRONMENT }}.usemodernlogic.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shieldrule-api-service
+                port:
+                  number: 9520
+    {{ end }}
+    {{- range .Values.environment_aliases }}
+    - host: grpc-{{ . }}.sliderule.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shieldrule-api-service
+                port:
+                  number: 9520
+    - host: grpc-{{ . }}.usemodernlogic.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shieldrule-api-service
+                port:
+                  number: 9520
+    {{- end }}
     - host: grpc-{{ .Values.SHIELDRULE_ENVIRONMENT }}-eks.sliderule.io
       http:
         paths:

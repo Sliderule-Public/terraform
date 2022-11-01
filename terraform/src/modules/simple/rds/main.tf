@@ -106,7 +106,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-usage" {
   evaluation_periods  = "1"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/RDS"
-  period              = "300"
+  period              = "600"
   statistic           = "Average"
   threshold           = "90"
   alarm_actions       = [var.sns_arn]
