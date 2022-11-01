@@ -49,7 +49,7 @@ data "aws_ami" "ubuntu" {
 }
 
 module "shared_ecs_load_balancer" {
-  source             = "../src/modules/simple/load_balancer"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/load_balancer"
   environment        = var.environment
   company_name       = var.company_name
   tags               = var.tags
@@ -62,7 +62,7 @@ module "shared_ecs_load_balancer" {
 }
 
 module "shared_ecs_auto_scaling_group" {
-  source             = "../src/modules/simple/auto_scaling_group"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/auto_scaling_group"
   environment        = var.environment
   tags               = var.tags
   desired_count      = 1
@@ -77,7 +77,7 @@ module "shared_ecs_auto_scaling_group" {
 }
 
 module "shared_ecs_launch_template" {
-  source                      = "../src/modules/simple/launch_template"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/launch_template"
   environment                 = var.environment
   company_name                = var.company_name
   tags                        = var.tags
@@ -99,7 +99,7 @@ module "shared_ecs_launch_template" {
 }
 
 module "shared_bastion_launch_template" {
-  source                = "../src/modules/simple/launch_template"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/launch_template"
   environment           = var.environment
   company_name          = var.company_name
   tags                  = var.tags
@@ -122,7 +122,7 @@ module "shared_bastion_launch_template" {
 }
 
 module "shared_bastion_auto_scaling_group" {
-  source             = "../src/modules/simple/auto_scaling_group"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/auto_scaling_group"
   environment        = var.environment
   company_name       = var.company_name
   tags               = var.tags

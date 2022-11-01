@@ -1,10 +1,16 @@
 #
 #    Values for Kubernetes
 #
-service_account_role: ARN of the task role to pass to the service account
+service_account_role: # ARN of the task role to pass to the service account
 alb_controller_service_account_role: # ARN of the IAM role to pass for the ALB controller
 alb_cert_arn: # ACM certificate to pass to the optional ALB
 enable_aws_alb: # if true, will attempt to launch a load balancer
+pod_security_group: # AWS security group for Sliderule application pods
+public_subnet_ids: # Subnets where the optional Application Load Balancer is deployed
+autoscaler_service_account_role: # AWS IAM Role for the node group autoscaler service
+web_image_url: # URL of web image
+api_image_url: # URL of api image
+prometheus_image_url: # URL of prometheus image
 
 
 #

@@ -1,5 +1,9 @@
+locals {
+  eks_kms_grantees = var.deploy_eks == true ? [aws_iam_role.eks-tasks[0].arn, aws_iam_role.eks[0].arn] : []
+}
+
 module "main_key" {
-  source       = "../src/modules/simple/kms_key"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/kms_key"
   environment  = var.environment
   region       = var.region
   company_name = var.company_name
@@ -11,11 +15,12 @@ module "main_key" {
     module.ecs_task_execution_role.role_arn,
     module.ecs_task_role.role_arn,
     module.prometheus_role.role_arn
-  ])
+  ],
+  local.eks_kms_grantees)
 }
 
 module "rds_key" {
-  source       = "../src/modules/simple/kms_key"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/kms_key"
   environment  = var.environment
   region       = var.region
   company_name = var.company_name
@@ -83,7 +88,7 @@ data "aws_iam_policy_document" "main_kms_key" {
 }
 
 module "sns_key" {
-  source       = "../src/modules/simple/kms_key"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/kms_key"
   environment  = var.environment
   region       = var.region
   company_name = var.company_name

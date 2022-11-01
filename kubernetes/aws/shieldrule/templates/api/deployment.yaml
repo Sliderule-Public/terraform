@@ -18,13 +18,26 @@ spec:
       {{ if .Values.service_account_role }}
       serviceAccountName: tasks
       {{ end }}
+      terminationGracePeriodSeconds: 300
       containers:
-        - image: "600592424179.dkr.ecr.us-west-1.amazonaws.com/shieldrule-api:{{ .Values.SHIELDRULE_ENVIRONMENT }}"
+        - image: "{{ .Values.api_image_url }}:{{ .Values.SHIELDRULE_ENVIRONMENT }}"
           imagePullPolicy: Always
           name: shieldrule-api
           ports:
             - containerPort: 8000
             - containerPort: 9520
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8000
+            timeoutSeconds: 10
+            initialDelaySeconds: 300
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8000
+            timeoutSeconds: 10
+            initialDelaySeconds: 300
           resources:
             requests:
               memory: {{ .Values.api.resources.requests.memory }}
@@ -35,6 +48,9 @@ spec:
           envFrom:
           - secretRef:
               name: api-secret
+          volumeMounts:
+            - mountPath: /tmp
+              name: shieldrule-api-tmpfs
           securityContext:
             capabilities:
               drop:
@@ -83,8 +99,14 @@ spec:
             - name: SQS_URL
               value: {{ .Values.SQS_URL | quote }}
         - name: prometheus
-          image: "600592424179.dkr.ecr.us-west-1.amazonaws.com/prometheus:{{ .Values.SHIELDRULE_ENVIRONMENT }}"
+          image: "{{ .Values.prometheus_image_url }}:{{ .Values.SHIELDRULE_ENVIRONMENT }}"
           ports:
             - containerPort: 12346
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
       restartPolicy: Always
+      volumes:
+        - emptyDir: {}
+          name: shieldrule-api-tmpfs
 status: {}

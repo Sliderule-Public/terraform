@@ -1,5 +1,5 @@
 module "web_task_definition" {
-  source             = "../src/modules/simple/ecs_service_task_definition"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/ecs_service_task_definition"
   environment        = var.environment
   image_tag          = var.environment == "prod" ? "master" : var.environment
   company_name       = var.company_name
@@ -38,7 +38,7 @@ module "web_task_definition" {
 }
 
 module "api_task_definition" {
-  source             = "../src/modules/simple/ecs_service_task_definition_api"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/ecs_service_task_definition_api"
   environment        = var.environment
   image_tag          = var.environment
   company_name       = var.company_name
@@ -80,7 +80,7 @@ module "api_task_definition" {
 }
 
 module "jobs_task_definition" {
-  source             = "../src/modules/simple/ecs_service_task_definition"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/ecs_service_task_definition"
   environment        = var.environment
   image_tag          = var.environment
   company_name       = var.company_name

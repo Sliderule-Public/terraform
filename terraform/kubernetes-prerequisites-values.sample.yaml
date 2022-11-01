@@ -6,3 +6,4 @@ aws-load-balancer-controller:
 alb_controller_service_account_role:
 autoscaler_service_account_role:
 shieldrule_environment:
+redirect_backend_services: true

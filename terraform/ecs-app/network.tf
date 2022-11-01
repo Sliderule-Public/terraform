@@ -1,5 +1,5 @@
 module "shared_vpc" {
-  source         = "../src/modules/composite/vpc"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//composite/vpc"
   environment    = var.environment
   company_name   = var.company_name
   vpc_cidr_block = var.app_vpc_cidr
@@ -10,7 +10,7 @@ module "shared_vpc" {
 }
 
 module "rds_security_group" {
-  source              = "../src/modules/simple/vpc_security_group"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/vpc_security_group"
   environment         = var.environment
   company_name        = var.company_name
   tags                = var.tags
@@ -70,7 +70,7 @@ module "rds_security_group" {
 }
 
 module "shared_launch_template_security_group" {
-  source              = "../src/modules/simple/vpc_security_group"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/vpc_security_group"
   environment         = var.environment
   company_name        = var.company_name
   security_group_name = "shared_launch_template"
@@ -103,7 +103,7 @@ module "shared_launch_template_security_group" {
 }
 
 module "shared_ecs_service_security_group" {
-  source              = "../src/modules/simple/vpc_security_group"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/vpc_security_group"
   environment         = var.environment
   company_name        = var.company_name
   tags                = var.tags
@@ -128,7 +128,7 @@ module "shared_ecs_service_security_group" {
 }
 
 module "database_access_security_group" {
-  source              = "../src/modules/simple/vpc_security_group"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/vpc_security_group"
   environment         = var.environment
   company_name        = var.company_name
   tags                = var.tags
@@ -146,7 +146,7 @@ module "database_access_security_group" {
 }
 
 module "shared_load_balancer_security_group" {
-  source              = "../src/modules/simple/vpc_security_group"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/vpc_security_group"
   environment         = var.environment
   company_name        = var.company_name
   tags                = var.tags
@@ -173,7 +173,7 @@ module "shared_load_balancer_security_group" {
 }
 
 module "shared_bastion_security_group" {
-  source              = "../src/modules/simple/vpc_security_group"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/vpc_security_group"
   environment         = var.environment
   company_name        = var.company_name
   tags                = var.tags
@@ -200,7 +200,7 @@ module "shared_bastion_security_group" {
 }
 
 module "pod_security_group" {
-  source              = "../src/modules/simple/vpc_security_group"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/vpc_security_group"
   environment         = var.environment
   company_name        = var.company_name
   tags                = var.tags

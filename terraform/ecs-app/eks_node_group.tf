@@ -24,7 +24,7 @@ data "aws_ami" "eks" {
 }
 
 module "shared_eks_launch_template" {
-  source                      = "../src/modules/simple/launch_template"
+  source = "git@github.com:Modern-Logic/terraform-modules.git//simple/launch_template"
   environment                 = var.environment
   company_name                = var.company_name
   tags                        = var.tags
