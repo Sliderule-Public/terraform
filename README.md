@@ -18,10 +18,10 @@ Here are the main directories and their purposes:
 - `/shared` - hosts one-time resources that are shared across application deployments, such as AWS ECR repositories, optional Route53 resources, and an ECS service role.
 You should never have to interact with this directory outside of a single one-time `terraform apply` at the beginning of your onboarding.
 - `/ecs-app` - hosts the actual terraform you'll run `terraform apply` in to deploy the Shieldrule application in ECS. This directory has *.tf files which handle all the resources required for Shieldrule.
-- `/eks-app` - DEPRECATED, use `/ecs-app` instead. This directory is a deprecated version of `/ecs-app` which deploys Shieldrule in EKS. It is no longer maintained.
+- `/eks-app` - DEPRECATED, use `/ecs-app` instead. This directory is a deprecated version of `/ecs-app` which deploys Shieldrule in EKS. It is no longer maintained and will be removed in the future.
 - `/src` - contains terraform modules. This directory exists to create consistency among all terraform resources deployed, and is used by the `/ecs-app` and `eks-app` directories in the form of module calls.
 You should never have to interact with this directory or any subdirectories inside it.
-- `/kubernetes` - DEPRECATED, use `/ecs-app` instead. This directory contains kubernetes manifests for deploying Shieldrule in EKS. It is no longer maintained.
+- `/kubernetes` - DEPRECATED, use `/ecs-app` instead. This directory contains kubernetes manifests for deploying Shieldrule in EKS. It is no longer maintained and will be removed in the future.
 
 
 ## One-time Prerequisites
