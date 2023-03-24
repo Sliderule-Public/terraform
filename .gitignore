@@ -8,6 +8,8 @@ infrastructure/terraform/command
 infrastructure/terraform/app.zip
 infrastructure/terraform/**.env
 infrastructure/terraform/**/**.backup
+**/*.tfvars
+.idea
 
 
 ### Kube ###

@@ -1,7 +1,7 @@
 # Infrastructure readme
 
 ## Details
-This stack uses Terraform 0.15.0 to launch all infrastructure resources needed to host the Shieldrule suite in ECS or EKS.
+This stack uses Terraform to launch all infrastructure resources needed to host the Shieldrule suite in ECS or EKS.
 The major pieces this stack deploys per environment are:
 - VPC / subnets / route tables / NAT gateway / internet gateway / ACLs
 - ECS host autoscaling group
@@ -12,13 +12,13 @@ The major pieces this stack deploys per environment are:
 
 
 ## Structure
-TL;DR The `/eks-app` directory will be your main focus. It houses all the important terraform files for managing your Modern Logic app's resources. The `/shared` directory manages ancillary dependencies for the app directory. These resources can be easily substituted for ones that your orginization already manages. The `/src` directory is only for modules used by the other two directories. You should never have to work directly with anything in this folder.
+TL;DR The `/ecs-app` directory will be your main focus. It houses all the important terraform files for managing your Modern Logic app's resources. The `/shared` directory manages ancillary dependencies for the app directory. These resources can be easily substituted for ones that your orginization already manages. The `/src` directory is only for modules used by the other two directories. You should never have to work directly with anything in this folder.
 
 Here are the main directories and their purposes:
 - `/shared` - hosts one-time resources that are shared across application deployments, such as AWS ECR repositories, optional Route53 resources, and an ECS service role.
 You should never have to interact with this directory outside of a single one-time `terraform apply` at the beginning of your onboarding.
 - `/ecs-app` - hosts the actual terraform you'll run `terraform apply` in to deploy the Shieldrule application in ECS. This directory has *.tf files which handle all the resources required for Shieldrule.
-- `/eks-app` - an alternative to `ecs-app` for those who want to deploy EKS instead.
+- `/eks-app` - DEPRECATED, use `/ecs-app` instead. This directory is a deprecated version of `/ecs-app` which deploys Shieldrule in EKS. It is no longer maintained.
 - `/src` - contains terraform modules. This directory exists to create consistency among all terraform resources deployed, and is used by the `/ecs-app` and `eks-app` directories in the form of module calls.
 You should never have to interact with this directory or any subdirectories inside it.
 
@@ -57,40 +57,7 @@ This is done manually in order to allow you to use any DNS provider and verifica
   ```
 
 #### EKS inside `ecs-app`
-Because `ecs-app` and `eks-app` are mutually-exclusive Terraform stacks, and because of the need for some to be able to use both ECS and EKS, or switch between them, `ecs-app` offers an optional EKS cluster.
-
-There are two flows for deploying the optional EKS cluster from `ecs-app`:
-
-
-### EKS
-#### Setup
-- Copy `eks-app/sample.tfvars` to `eks-app/{environment}.tfvars` file, and fill in required values
-- Deploy:
-  ```
-  cd eks-app
-  terraform workspace new {env}
-  terraform init
-  terraform apply --var-file={env}.tfvars
-  ```
-- this stack will create all resources needed to host Shieldrule in EKS, and then output required values to `kubernetes/aws/shieldrule` to simplify deployments in those stacks
-
-#### Kubernetes deployment
-#### Deployment types
-We offer two kinds of deployments without any additional customization: NodePort and AWS ALB Ingress. Choose NodePort if you plan to handle your own ingress.
-Choose AWS ALB Ingress if you want the helm chart to expose your services through an AWS Application Load Balancer.
-- If you set `var.use_variable_scripts` in `eks-app` to false, you'll need to generate a values file. Copy `infrastructure/kubernetes/aws/shieldrule/values.sample.yaml` to `values-${environment}.yaml` and customize it.
-
-
-##### Basic NodePort deployment
-- Set `enable_aws_alb` to false in your values file if you want to prevent deployment of AWS ALB resources
-- Run `use_aws_cluster region=${aws region} cluster=${EKS cluster}` to configure kubectl access
-- Run `make install` in `infrastructure/kubernetes/aws/shieldrule`
-
-##### ALB Ingress deployment
-- Set `enable_aws_alb` to true in your values file
-- Set `alb_controller_service_account_role` to the value of the `EKS_ALB_CONTROLLER_ROLE_ARN` output in the `eks-app` Terraform stack.
-- Run `use_aws_cluster region=${aws region} cluster=${EKS cluster}` to configure kubectl access
-- Run `make install_all` in `infrastructure/kubernetes/aws/shieldrule`
+This feature is deprecated and will be removed in the future. Please use our EKS-specific modules to support EKS.
 
 ##### Other considerations
 We offer a few small scripts in `infrastructure/kubernetes/aws/shieldrule/Makefile` to make it easier to deploy our kubernetes manifests. Some useful scripts:
