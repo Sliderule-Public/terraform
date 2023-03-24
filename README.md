@@ -21,6 +21,7 @@ You should never have to interact with this directory outside of a single one-ti
 - `/eks-app` - DEPRECATED, use `/ecs-app` instead. This directory is a deprecated version of `/ecs-app` which deploys Shieldrule in EKS. It is no longer maintained.
 - `/src` - contains terraform modules. This directory exists to create consistency among all terraform resources deployed, and is used by the `/ecs-app` and `eks-app` directories in the form of module calls.
 You should never have to interact with this directory or any subdirectories inside it.
+- `/kubernetes` - DEPRECATED, use `/ecs-app` instead. This directory contains kubernetes manifests for deploying Shieldrule in EKS. It is no longer maintained.
 
 
 ## One-time Prerequisites
